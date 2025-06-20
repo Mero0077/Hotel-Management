@@ -8,6 +8,8 @@ namespace Hotel_Management.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
+            //kokokooo
+            //sjhnasbbdsckubdac
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
@@ -17,6 +19,8 @@ namespace Hotel_Management.Controllers
         {
             _logger = logger;
         }
+
+        
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
