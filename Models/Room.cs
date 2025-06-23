@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hotel_Management.Models.Enums;
+using System;
 
 namespace Hotel_Management.Models
 {

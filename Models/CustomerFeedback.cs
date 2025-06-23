@@ -1,6 +1,6 @@
 ﻿namespace Hotel_Management.Models
 {
-    public class CustomerFeedback
+    public class CustomerFeedback:BaseModel
     {
     }
 }

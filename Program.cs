@@ -1,4 +1,8 @@
 
+using Hotel_Management.Data;
+using Hotel_Management.DTOs.Reservation;
+using Hotel_Management.Services;
+
 namespace Hotel_Management
 {
     public class Program
@@ -10,8 +14,14 @@ namespace Hotel_Management
             // Add services to the container.
 
             builder.Services.AddControllers();
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddDbContext<ApplicationDbContext>();
+            builder.Services.AddScoped< ReservationService>();
+
+            builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
 
             var app = builder.Build();
 
