@@ -1,4 +1,4 @@
-﻿using Hotel_Management.DTOs.Reservation
+﻿using Hotel_Management.DTOs.Reservation;
 
 namespace HotelReservationSystem.api.Contracts.Rooms
 {
