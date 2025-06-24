@@ -8,6 +8,7 @@
         ReservationNotFound = 100,
         InvalidReservation = 101,
         ReservationExists = 102,
+        ReservateDateInvalid=103,
         #endregion
 
 

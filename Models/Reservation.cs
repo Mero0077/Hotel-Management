@@ -23,6 +23,6 @@ namespace Hotel_Management.Models
         public int RoomId { get; set; }
         public Room Room { get; set; } = default!;
 
-        public CustomerFeedback Feedback { get; set; } = default!;
+        public CustomerFeedback? Feedback { get; set; } = default!;
     }
 }

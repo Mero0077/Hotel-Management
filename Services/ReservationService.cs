@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hotel_Management.DTOs.Error;
 using Hotel_Management.DTOs.Reservation;
 using Hotel_Management.Models;
 using Hotel_Management.Models.Enums;
@@ -20,11 +21,6 @@ namespace Hotel_Management.Services
             this.mapper = mapper;
         }
 
-        public List<Reservation> GetAllReservations()
-        {
-            return _ReservationRepository.GetAll().ToList();
-        }
-
         private static bool DateChecker(DateTime StartDate, DateTime EndDate)
         {
             return StartDate<DateTime.UtcNow.Date || EndDate <= StartDate.Date;
@@ -34,57 +30,81 @@ namespace Hotel_Management.Services
         {
             return (EndDate - StartDate).Days * price;
         }
-        public async Task<ResponseVM<ReservationRequest>> ReserveRoom(ReservationRequest req)
-        {
-            if (DateChecker(req.CheckInDate,req.CheckInDate))
-                return new FailureResponseVM<ReservationRequest>(ErrorCode.InvalidReservation, "Invalid date");
 
+        private async Task ChangeRoomStatus(Room room,RoomStatus roomStatus)
+        {
+            room.Status = roomStatus;
+            await _RoomRepository.UpdateIncludeAsync(room, nameof(room.Status));
+        }
+        public List<Reservation> GetAllReservations()
+        {
+            return _ReservationRepository.GetAll().ToList();
+        }
+
+        public async Task<Reservation> GetReservation(int Id)
+        {
+           return await _ReservationRepository.GetOneWithTracking(e=>e.Id == Id);
+        }
+        public async Task<ResponseDTO<ReservationRequest>> ReserveRoom(ReservationRequest req)
+        {
+           
             var room = await _RoomRepository.GetOneWithTracking(r => r.Id == req.RoomId);
 
             if (room == null)
-                return new FailureResponseVM<ReservationRequest>(ErrorCode.RoomNotFound, "Room not found");
+                return new ErrorFailDTO<ReservationRequest>(ErrorCode.RoomNotFound, "Room not found");
 
             if (room.Status == RoomStatus.Occupied)
-                return new FailureResponseVM<ReservationRequest>(ErrorCode.ReservationExists, "Room is already booked");
+                return new ErrorFailDTO<ReservationRequest>(ErrorCode.ReservationExists, "Room is already booked");
 
             req.TotalCost = CalculateTotalCost(req.CheckInDate, req.CheckOutDate, room.PricePerNight);
             var reservation = mapper.Map<Reservation>(req);
             await _ReservationRepository.Add(reservation);
 
-            return new SuccessResponseVM<ReservationRequest>(req, "Reservation successful");
+           await ChangeRoomStatus(room, RoomStatus.Occupied);
+
+            return new ErrorSuccessDTO<ReservationRequest>(req, "Reservation successful");
         }
 
         public async Task<Reservation> Update(ReservationUpdateRequest req)
         {
-            if (DateChecker(req.CheckInDate,req.CheckOutDate)) return null;
 
             var dto = await _ReservationRepository.Get(r => r.Id == req.Id).Select(r => new
-        {
+            {
             Reservation = r,              
-            RoomPrice = r.Room.PricePerNight
-        }).FirstOrDefaultAsync();
+            RoomPrice = r.Room.PricePerNight}).FirstOrDefaultAsync();
 
 
             if (dto == null)
                 return null;
 
             req.TotalCost = CalculateTotalCost(req.CheckInDate, req.CheckOutDate, dto.RoomPrice);
-            var UpdatedRes= mapper.Map<Reservation>(req);
-            await _ReservationRepository.Update(UpdatedRes);
-            return UpdatedRes;
+            var updatedReservation = mapper.Map<Reservation>(req);
+            updatedReservation.Id=req.Id;
+
+            await _ReservationRepository.UpdateIncludeAsync(updatedReservation, nameof(updatedReservation.CheckInDate),nameof(updatedReservation.CheckOutDate),
+                                                          nameof(updatedReservation.BookingDate),nameof(updatedReservation.NumberOfGuests),
+                                                          nameof(updatedReservation.TotalCost),nameof(updatedReservation.Status),nameof(updatedReservation.RoomId));
+
+            return updatedReservation;
 
         }
         public async Task<Reservation> Cancel(int id)
         {
-            var reservation= await _ReservationRepository.GetOneWithTracking(e=>e.Id == id);
-            if (reservation == null)
+            var reserv = await _ReservationRepository.Get(e => e.Id == id).Select(e => new
+            {
+                Reservation=e,
+                Room=e.Room
+            }).FirstOrDefaultAsync();
+            if (reserv == null)
                 return null;
 
-            if (DateChecker(reservation.CheckInDate, reservation.CheckOutDate)) return null;
+            if (DateChecker(reserv.Reservation.CheckInDate, reserv.Reservation.CheckOutDate)) return null;
 
-            reservation.Status=ReservationStatus.Cancelled;
-            await _ReservationRepository.Update(reservation);
-            return reservation;
+            reserv.Reservation.Status=ReservationStatus.Cancelled;
+            await _ReservationRepository.UpdateIncludeAsync(reserv.Reservation,nameof(reserv.Reservation.Status));
+
+            await ChangeRoomStatus(reserv.Room, RoomStatus.Available);
+            return reserv.Reservation;
 
         }   
     }
