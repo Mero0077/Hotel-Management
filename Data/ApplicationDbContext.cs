@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Hotel_Management.Data
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): DbContext(options)
     {
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Room> Rooms { get; set; }
@@ -13,7 +13,8 @@ namespace Hotel_Management.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=HotelDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True")
+            //optionsBuilder.UseSqlServer("Server=.;Database=HotelDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True")
+            optionsBuilder
                  .LogTo(log => Debug.WriteLine(log), LogLevel.Information).EnableSensitiveDataLogging(true).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
     }

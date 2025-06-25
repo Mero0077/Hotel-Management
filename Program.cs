@@ -4,6 +4,7 @@ using Hotel_Management.DTOs.Reservation;
 using Hotel_Management.Repositories;
 using Hotel_Management.Services;
 using HotelReservationSystem.api.Services.FacilitiesService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Management
 {
@@ -20,7 +21,11 @@ namespace Hotel_Management
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddDbContext<ApplicationDbContext>();
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
             builder.Services.AddScoped(typeof(GeneralRepository<>));
 
             builder.Services.AddScoped< ReservationService>();

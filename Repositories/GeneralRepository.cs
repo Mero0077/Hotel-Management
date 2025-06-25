@@ -8,12 +8,12 @@ namespace Hotel_Management.Repositories
 {
     public class GeneralRepository<T> where T : BaseModel
     {
-        private ApplicationDbContext _context;
         private DbSet<T> _dbSet;
+        private readonly ApplicationDbContext _context;
 
-        public GeneralRepository()
+        public GeneralRepository(ApplicationDbContext context)
         {
-            _context = new ApplicationDbContext();
+            _context = context;
             _dbSet = _context.Set<T>();
         }
 

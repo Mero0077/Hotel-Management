@@ -13,10 +13,10 @@ namespace Hotel_Management.Services
         private IMapper mapper;
         private GeneralRepository<Reservation> _ReservationRepository;
         private GeneralRepository<Room> _RoomRepository;
-        public ReservationService(IMapper mapper)
+        public ReservationService(IMapper mapper, GeneralRepository<Reservation> reservationRepository, GeneralRepository<Room> RoomRepository)
         {
-            _ReservationRepository = new GeneralRepository<Reservation>();
-            _RoomRepository = new GeneralRepository<Room>();
+            _ReservationRepository = reservationRepository;
+            _RoomRepository = RoomRepository;
             this.mapper = mapper;
         }
 

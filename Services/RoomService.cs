@@ -10,13 +10,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 namespace Hotel_Management.Services
 {
-    public class RoomService(IMapper mapper, IWebHostEnvironment webHostEnvironment)
+    public class RoomService(IMapper mapper, IWebHostEnvironment webHostEnvironment, 
+            GeneralRepository<RoomType> roomTypeRepository, 
+            GeneralRepository<Room> roomRepository, GeneralRepository<Facility> facilityRepository)
     {
 
-        private IMapper _mapper = mapper;
-        private GeneralRepository<RoomType> _roomTypeRepository = new GeneralRepository<RoomType>();
-        private GeneralRepository<Room> _roomRepository = new GeneralRepository<Room>();
-        private GeneralRepository<Facility> _facilityRepository = new GeneralRepository<Facility>();
+        private readonly IMapper _mapper = mapper;
+        private readonly GeneralRepository<RoomType> _roomTypeRepository = roomTypeRepository;
+        private readonly GeneralRepository<Room> _roomRepository = roomRepository;
+        private readonly GeneralRepository<Facility> _facilityRepository = facilityRepository;
 
         private readonly string _imagesPath = $"{webHostEnvironment.WebRootPath}/wwwroot/roomImages";
 
