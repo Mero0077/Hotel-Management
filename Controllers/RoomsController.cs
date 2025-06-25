@@ -36,14 +36,14 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpPost("")]
-        public async Task<ResponseVM<RoomResponse>> AddRoom([FromBody] RoomRequest request, CancellationToken cancellationToken)
+        public async Task<ResponseVM<RoomResponse>> AddRoom([FromBody] AddRoomRequest request, CancellationToken cancellationToken)
         {
             var result = await _roomService.AddAsync(request, cancellationToken);
             return result;
         }
 
         [HttpPut("{id}")]
-        public async Task<ResponseVM<RoomResponse>> UpdateRoom([FromRoute] int id, [FromBody] RoomRequest request, CancellationToken cancellationToken)
+        public async Task<ResponseVM<RoomResponse>> UpdateRoom([FromRoute] int id, [FromBody] AddRoomRequest request, CancellationToken cancellationToken)
         {
             var result = await _roomService.UpdateAsync(id, request, cancellationToken);
             return result;

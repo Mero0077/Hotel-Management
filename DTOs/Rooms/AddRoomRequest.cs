@@ -2,13 +2,14 @@
 
 namespace Hotel_Management.DTOs.Rooms
 {
-    public record RoomRequest(
+    public record AddRoomRequest(
         string RoomNumber,
         string Description,
         RoomStatus Status,
         decimal PricePerNight,
         int MaxOccupancy,
         int RoomTypeId,
-        List<int> FacilityIds
+        List<int> FacilityIds,
+        IFormFileCollection RoomImages
     );
 }

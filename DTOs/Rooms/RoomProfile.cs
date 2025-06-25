@@ -8,7 +8,7 @@ namespace Hotel_Management.DTOs.Rooms
     {
         public RoomProfile()
         {
-            CreateMap<RoomRequest, Room>();
+            CreateMap<AddRoomRequest, Room>();
 
             CreateMap<Room, RoomResponse>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))

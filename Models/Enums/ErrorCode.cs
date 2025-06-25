@@ -30,5 +30,10 @@
         FacilityInUse = 402,
         #endregion
 
+        #region RoomImage
+        RoomImageNotFound = 500,
+        RoomImageExtensionIsNotValid = 501,
+        #endregion
+
     }
 }

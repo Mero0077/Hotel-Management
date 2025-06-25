@@ -5,7 +5,7 @@ namespace Hotel_Management.Models
 {
     public class Room:BaseModel
     {
-        public string RoomNumber { get; set; } = string.Empty;
+        public string RoomNumber { get; set; } = string.Empty; 
 
         public string Description { get; set; } = string.Empty;
 
