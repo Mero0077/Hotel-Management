@@ -1,6 +1,7 @@
-﻿using Hotel_Management.DTOs.Reservation
+﻿using Hotel_Management.DTOs.Facilities;
+using Hotel_Management.DTOs.RoomTypes;
 
-namespace HotelReservationSystem.api.Contracts.Rooms
+namespace Hotel_Management.DTOs.Rooms
 {
     public record RoomResponse(
         int Id,

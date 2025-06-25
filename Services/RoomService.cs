@@ -1,102 +1,116 @@
-﻿//using HotelReservationSystem.api.Contracts.Rooms;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Azure;
+using Hotel_Management.DTOs.Rooms;
+using Hotel_Management.Models;
+using Hotel_Management.Models.Enums;
+using Hotel_Management.Models.ViewModels.Errors;
+using Hotel_Management.Repositories;
+using Microsoft.EntityFrameworkCore;
+namespace Hotel_Management.Services
+{
+    public class RoomService
+    {
 
-//namespace HotelReservationSystem.api.Services.RoomsService
-//{
-//    public class RoomService(IGeneralRepository<Room> roomRepository,
-//            IGeneralRepository<RoomType> roomTypeRepository,
-//            IGeneralRepository<Facility> facilityRepository) : IRoomService
-//    {
-//        private readonly IGeneralRepository<Room> _roomRepository = roomRepository;
-//        private readonly IGeneralRepository<RoomType> _roomTypeRepository = roomTypeRepository;
-//        private readonly IGeneralRepository<Facility> _facilityRepository = facilityRepository;
+        private IMapper _mapper;
+        private GeneralRepository<RoomType> _roomTypeRepository;
+        private GeneralRepository<Room> _roomRepository;
+        private GeneralRepository<Facility> _facilityRepository;
+        public RoomService(IMapper mapper)
+        {
+            _roomRepository = new GeneralRepository<Room>();
+            _roomTypeRepository = new GeneralRepository<RoomType>();
+            _facilityRepository = new GeneralRepository<Facility>();
+            _mapper = mapper;
+        }
 
-//        public async Task<IEnumerable<RoomResponse>> GetAllAsync(CancellationToken cancellationToken = default)
-//        {
-//            return await _roomRepository.Get(r => r.IsActive)
-//                .Include(r => r.RoomType)
-//                .Include(r => r.Facilities)
-//                .ProjectToType<RoomResponse>()
-//                .ToListAsync(cancellationToken);
-//        }
+        public async Task<IEnumerable<RoomResponse>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            var roomsResponse = await _roomRepository.GetAll()
+                .ProjectTo<RoomResponse>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
-//        public async Task<Result<RoomResponse>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
-//        {
-//            var room = await _roomRepository.Get(r => r.Id == id && r.IsActive)
-//                .Include(r => r.RoomType)
-//                .Include(r => r.Facilities)
-//                .ProjectToType<RoomResponse>()
-//                .FirstOrDefaultAsync(cancellationToken);
+            return roomsResponse;
+        }
 
-//            return room is null
-//                ? Result.Failure<RoomResponse>(RoomErrors.NotFound)
-//                : Result.Success(room);
-//        }
+        public async Task<ResponseVM<RoomResponse>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var room = await _roomRepository.GetOneByIdAsync(id);
 
-//        public async Task<Result<RoomResponse>> AddAsync(RoomRequest request, CancellationToken cancellationToken = default)
-//        {
-//            if (await _roomRepository.AnyAsync(r => r.RoomNumber == request.RoomNumber, cancellationToken))
-//                return Result.Failure<RoomResponse>(RoomErrors.AlreadyExists);
+            if (room is null)
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomNotFound, "Room not found");
 
-//            if (!await _roomTypeRepository.AnyAsync(rt => rt.Id == request.RoomTypeId, cancellationToken))
-//                return Result.Failure<RoomResponse>(RoomTypeErrors.NotFound);
+            var roomResponse = _mapper.Map<RoomResponse>(room);
 
-//            var facilities = await _facilityRepository.Get(f => request.FacilityIds.Contains(f.Id))
-//                    .AsTracking()
-//                    .ToListAsync(cancellationToken);
-//            if (facilities.Count != request.FacilityIds.Count)
-//                return Result.Failure<RoomResponse>(FacilityErrors.NotFound);
+            return new SuccessResponseVM<RoomResponse>(roomResponse, "Successful");
+        }
 
-//            var room = request.Adapt<Room>();
-//            room.Facilities = facilities; // Assign existing facilities
+        //ERROR::Cannot insert explicit value for identity column in table 'Facilities' when IDENTITY_INSERT is set to OFF.
+        public async Task<ResponseVM<RoomResponse>> AddAsync(RoomRequest request, CancellationToken cancellationToken = default)
+        {
+            if (await _roomRepository.AnyAsync(r => r.RoomNumber == request.RoomNumber, cancellationToken))
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomAlreadyExists, "Room already exists");
 
-//            var addedRoom = await _roomRepository.AddAsync(room);
-//            var response = addedRoom.Adapt<RoomResponse>();
+            if (!await _roomTypeRepository.AnyAsync(rt => rt.Id == request.RoomTypeId, cancellationToken))
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomTypeNotFound, "Room type not found");
 
-//            return Result.Success(response);
-//        }
+            var facilities = await _facilityRepository.Get(f => request.FacilityIds.Contains(f.Id))
+                    .AsTracking()
+                    .ToListAsync(cancellationToken);
+            if (facilities.Count != request.FacilityIds.Count)
+                return new FailureResponseVM<RoomResponse>(ErrorCode.FacilityNotFound, "Facility type not found");
 
-//        public async Task<Result> UpdateAsync(int id, RoomRequest request, CancellationToken cancellationToken = default)
-//        {
-//            var room = await _roomRepository.Get(r => r.Id == id && r.IsActive)
-//                .AsTracking()
-//                .Include(r => r.Facilities)
-//                .FirstOrDefaultAsync(cancellationToken);
+            var room = _mapper.Map<Room>(request);
+            room.Facilities = facilities; // Assign existing facilities
 
-//            if (room is null)
-//                return Result.Failure(RoomErrors.NotFound);
+            var addedRoom = await _roomRepository.AddAsync(room);
+            var response = _mapper.Map<RoomResponse>(addedRoom);
 
-//            if (await _roomRepository.AnyAsync(r => r.RoomNumber == request.RoomNumber && r.Id != id, cancellationToken))
-//                return Result.Failure(RoomErrors.AlreadyExists);
+            return new SuccessResponseVM<RoomResponse>(response, "Successful");
+        }
 
-//            // room = request.Adapt(room);
-//            request.Adapt(room);
+        public async Task<ResponseVM<RoomResponse>> UpdateAsync(int id, RoomRequest request, CancellationToken cancellationToken = default)
+        {
+            var room = await _roomRepository.GetOneWithTrackingAsync(r => r.Id == id && r.IsActive);
 
-//            var facilities = await _facilityRepository.Get(f => request.FacilityIds.Contains(f.Id)).ToListAsync(cancellationToken);
-//            if (facilities.Count != request.FacilityIds.Count)
-//            {
-//                return Result.Failure(FacilityErrors.NotFound);
-//            }
-//            room.Facilities = facilities;
+            if (room is null)
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomNotFound, "Room not found");
 
-//            await _roomRepository.SaveChangesAsync(cancellationToken);
-//            return Result.Success();
-//        }
+            if (await _roomRepository.AnyAsync(r => r.RoomNumber == request.RoomNumber && r.Id != id, cancellationToken))
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomTypeNotFound, "Room type not found");
 
-//        public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
-//        {
-//            var room = await _roomRepository.Get(r => r.Id == id)
-//                .Include(r => r.Reservations)
-//                .FirstOrDefaultAsync(cancellationToken);
+            // room = request.Adapt(room);
+            _mapper.Map(request, room);
 
-//            if (room is null)
-//                return Result.Failure(RoomErrors.NotFound);
+            var facilities = await _facilityRepository.Get(f => request.FacilityIds.Contains(f.Id)).ToListAsync(cancellationToken);
+            if (facilities.Count != request.FacilityIds.Count)
+                return new FailureResponseVM<RoomResponse>(ErrorCode.FacilityNotFound, "Facility type not found");
+            room.Facilities = facilities;
 
-//            if (room.Reservations.Count != 0)
-//                return Result.Failure(RoomErrors.InUse);
+            var response = _mapper.Map<RoomResponse>(room);
+            await _roomRepository.SaveChangesAsync(cancellationToken);
+            return new SuccessResponseVM<RoomResponse>(response, "Successful");
+        }
 
-//            room.IsActive = false;
-//            await _roomRepository.SaveChangesAsync(cancellationToken);
-//            return Result.Success();
-//        }
-//    }
-//}
+        public async Task<ResponseVM<RoomResponse>> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var room = await _roomRepository.Get(r => r.Id == id)
+                .Select(x => new
+                {
+                    Room = x,
+                    x.Reservations
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (room is null || room.Room is null)
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomNotFound, "Room not found");
+
+            if (room.Reservations.Count != 0)
+                return new FailureResponseVM<RoomResponse>(ErrorCode.RoomBooked, "Room is booked");
+
+            var deletedRoom = _roomRepository.DeleteAsync(id);
+            var response = _mapper.Map<RoomResponse>(deletedRoom);
+            return new SuccessResponseVM<RoomResponse>(response, "Successful");
+        }
+    }
+}

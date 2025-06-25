@@ -39,7 +39,7 @@ namespace Hotel_Management.Services
             if (DateChecker(req.CheckInDate,req.CheckInDate))
                 return new FailureResponseVM<ReservationRequest>(ErrorCode.InvalidReservation, "Invalid date");
 
-            var room = await _RoomRepository.GetOneWithTracking(r => r.Id == req.RoomId);
+            var room = await _RoomRepository.GetOneWithTrackingAsync(r => r.Id == req.RoomId);
 
             if (room == null)
                 return new FailureResponseVM<ReservationRequest>(ErrorCode.RoomNotFound, "Room not found");
@@ -49,7 +49,7 @@ namespace Hotel_Management.Services
 
             req.TotalCost = CalculateTotalCost(req.CheckInDate, req.CheckOutDate, room.PricePerNight);
             var reservation = mapper.Map<Reservation>(req);
-            await _ReservationRepository.Add(reservation);
+            await _ReservationRepository.AddAsync(reservation);
 
             return new SuccessResponseVM<ReservationRequest>(req, "Reservation successful");
         }
@@ -70,20 +70,20 @@ namespace Hotel_Management.Services
 
             req.TotalCost = CalculateTotalCost(req.CheckInDate, req.CheckOutDate, dto.RoomPrice);
             var UpdatedRes= mapper.Map<Reservation>(req);
-            await _ReservationRepository.Update(UpdatedRes);
+            await _ReservationRepository.UpdateAsync(UpdatedRes);
             return UpdatedRes;
 
         }
         public async Task<Reservation> Cancel(int id)
         {
-            var reservation= await _ReservationRepository.GetOneWithTracking(e=>e.Id == id);
+            var reservation= await _ReservationRepository.GetOneWithTrackingAsync(e=>e.Id == id);
             if (reservation == null)
                 return null;
 
             if (DateChecker(reservation.CheckInDate, reservation.CheckOutDate)) return null;
 
             reservation.Status=ReservationStatus.Cancelled;
-            await _ReservationRepository.Update(reservation);
+            await _ReservationRepository.UpdateAsync(reservation);
             return reservation;
 
         }   

@@ -1,59 +1,56 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Hotel_Management.DTOs.Facilities;
+using Hotel_Management.DTOs.RoomTypes;
+using Hotel_Management.Models.ViewModels.Errors;
+using Hotel_Management.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel_Management.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomTypesController : ControllerBase
+    public class RoomTypesController(RoomTypeService roomTypeService) : ControllerBase
     {
-        private readonly IRoomTypeService _roomTypeService = roomTypeService;
+        private readonly RoomTypeService _roomTypeService = roomTypeService;
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAllRoomTypes(CancellationToken cancellationToken)
+        public async Task<ResponseVM<IEnumerable<RoomTypeResponse>>> GetAllRoomTypes(CancellationToken cancellationToken)
         {
-            var roomTypes = await _roomTypeService.GetAllAsync(cancellationToken);
-            return Ok(roomTypes);
+            var response = await _roomTypeService.GetAllAsync(cancellationToken);
+            return new SuccessResponseVM<IEnumerable<RoomTypeResponse>>(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRoomTypeById([FromRoute] int id, CancellationToken cancellationToken)
+        public async Task<ResponseVM<RoomTypeResponse>> GetRoomTypeById([FromRoute] int id, CancellationToken cancellationToken)
         {
             var result = await _roomTypeService.GetByIdAsync(id, cancellationToken);
 
-            return result.IsSuccess
-                ? Ok(result.Value)
-                : result.ToProblem();
+            return result;
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> AddRoomType([FromBody] RoomTypeRequest request, CancellationToken cancellationToken)
+        public async Task<ResponseVM<RoomTypeResponse>> AddRoomType([FromBody] RoomTypeRequest request, CancellationToken cancellationToken)
         {
             var result = await _roomTypeService.AddAsync(request, cancellationToken);
 
-            return result.IsSuccess
-                ? CreatedAtAction(nameof(GetRoomTypeById), new { id = result.Value.Id }, result.Value)
-                : result.ToProblem();
+            return result;
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRoomType([FromRoute] int id, [FromBody] RoomTypeRequest request, CancellationToken cancellationToken)
+        public async Task<ResponseVM<RoomTypeResponse>> UpdateRoomType([FromRoute] int id, [FromBody] RoomTypeRequest request, CancellationToken cancellationToken)
         {
             var result = await _roomTypeService.UpdateAsync(id, request, cancellationToken);
 
-            return result.IsSuccess
-                ? NoContent()
-                : result.ToProblem();
+            return result;
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRoomType([FromRoute] int id, CancellationToken cancellationToken)
+        public async Task<ResponseVM<RoomTypeResponse>> DeleteRoomType([FromRoute] int id, CancellationToken cancellationToken)
         {
             var result = await _roomTypeService.DeleteAsync(id, cancellationToken);
 
-            return result.IsSuccess
-                ? NoContent()
-                : result.ToProblem();
+            return result;
         }
     }
 }

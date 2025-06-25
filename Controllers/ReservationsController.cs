@@ -55,7 +55,7 @@ namespace Hotel_Management.Controllers
         [HttpPatch("cancel/{Id}")]
         public async Task<ResponseVM<ReservationCancelVM>> Cancel([FromRoute] int Id)
         {
-            var res = _reservationService.Cancel(Id);
+            var res = await _reservationService.Cancel(Id);
             if(res==null)
                 return new FailureResponseVM<ReservationCancelVM>(ErrorCode.ReservationNotFound, "Reservation not found");
 
@@ -67,7 +67,7 @@ namespace Hotel_Management.Controllers
         public async Task<ResponseVM<ReservationUpdateVM>> Update([FromBody] ReservationUpdateVM reservationUpdateVM)
         {
             var Reservation = _mapper.Map<ReservationUpdateRequest>(reservationUpdateVM);
-            var res= _reservationService.Update(Reservation);
+            var res= await _reservationService.Update(Reservation);
             if (res==null)
                 return new FailureResponseVM<ReservationUpdateVM>(ErrorCode.ReservationNotFound, "Reservation not found");
 

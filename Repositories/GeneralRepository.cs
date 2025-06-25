@@ -26,24 +26,24 @@ namespace Hotel_Management.Repositories
             var res = GetAll().Where(expression);
             return res;
         }
-        public async Task<T> GetOneWithTracking(Expression<Func<T, bool>> expression)
+        public async Task<T> GetOneWithTrackingAsync(Expression<Func<T, bool>> expression)
         {
             return await _dbSet.AsTracking().Where(expression).FirstOrDefaultAsync();
         }
-        public async Task<T> GetOneById(int Id)
+        public async Task<T> GetOneByIdAsync(int Id)
         {
             return await _dbSet.AsTracking().Where(e => e.Id == Id).FirstOrDefaultAsync();
         }
 
 
-        public async Task<T> Add(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<T> Update(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
@@ -78,9 +78,9 @@ namespace Hotel_Management.Repositories
         //    _context.SaveChanges();
         //}
 
-        public async Task<T> Delete(int Id)
+        public async Task<T> DeleteAsync(int Id)
         {
-            var res = await GetOneById(Id);
+            var res = await GetOneByIdAsync(Id);
 
             if (res != null || !res.IsDeleted)
             {
@@ -93,7 +93,20 @@ namespace Hotel_Management.Repositories
 
         public bool IsExists(int Id)
         {
-            return GetOneById(Id) != null ? true : false;
+            return GetOneByIdAsync(Id) != null ? true : false;
+        }
+
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            var isMatch = await _dbSet.AnyAsync(predicate, cancellationToken);
+
+            return isMatch;
         }
     }
 }

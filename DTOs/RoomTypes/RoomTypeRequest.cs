@@ -1,4 +1,4 @@
-﻿namespace Hotel_Management.DTOs.Reservation
+﻿namespace Hotel_Management.DTOs.RoomTypes
 {
     public record RoomTypeRequest
     (

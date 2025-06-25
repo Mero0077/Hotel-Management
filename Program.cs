@@ -1,7 +1,9 @@
 
 using Hotel_Management.Data;
 using Hotel_Management.DTOs.Reservation;
+using Hotel_Management.Repositories;
 using Hotel_Management.Services;
+using HotelReservationSystem.api.Services.FacilitiesService;
 
 namespace Hotel_Management
 {
@@ -19,7 +21,12 @@ namespace Hotel_Management
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ApplicationDbContext>();
+            builder.Services.AddScoped(typeof(GeneralRepository<>));
+
             builder.Services.AddScoped< ReservationService>();
+            builder.Services.AddScoped<FacilityService>();
+            builder.Services.AddScoped<RoomTypeService>();
+            builder.Services.AddScoped<RoomService>();
 
             builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
 

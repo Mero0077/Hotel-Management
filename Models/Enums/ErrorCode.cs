@@ -15,8 +15,20 @@
         RoomNotFound = 200,
         InvalidRoom = 201,
         RoomBooked = 202,
+        RoomAlreadyExists = 203,
         #endregion
 
-      
+        #region RoomType
+        RoomTypeNotFound = 300,
+        RoomTypeAlreadyExists = 301,
+        RoomTypeInUse = 302,
+        #endregion
+
+        #region Facility
+        FacilityNotFound = 400,
+        FacilityAlreadyExists = 401,
+        FacilityInUse = 402,
+        #endregion
+
     }
 }

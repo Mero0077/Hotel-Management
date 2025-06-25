@@ -1,81 +1,96 @@
-﻿//using Hotel_Management.DTOs.Reservation
-//using Mapster;
-//using Microsoft.EntityFrameworkCore;
+﻿
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Azure;
+using Hotel_Management.DTOs.Facilities;
+using Hotel_Management.DTOs.Rooms;
+using Hotel_Management.Models;
+using Hotel_Management.Models.Enums;
+using Hotel_Management.Models.ViewModels.Errors;
+using Hotel_Management.Repositories;
+using Microsoft.EntityFrameworkCore;
 
-//namespace HotelReservationSystem.api.Services.FacilitiesService
-//{
-//    public class FacilityService(IGeneralRepository<Facility> facilityRepository) : IFacilityService
-//    {
-//        private readonly IGeneralRepository<Facility> _facilityRepository = facilityRepository;
+namespace HotelReservationSystem.api.Services.FacilitiesService
+{
+    public class FacilityService(GeneralRepository<Facility> facilityRepository, IMapper mapper) 
+    {
+        private readonly GeneralRepository<Facility> _facilityRepository = facilityRepository;
+        private readonly IMapper _mapper = mapper;
 
-//        public async Task<IEnumerable<FacilityResponse>> GetAllAsync(CancellationToken cancellationToken = default)
-//        {
-//            var facilities = await _facilityRepository.Get(f => f.IsActive)
-//                        .ToListAsync(cancellationToken);
+        public async Task<IEnumerable<FacilityResponse>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            var roomsResponse = await _facilityRepository.GetAll()
+                .ProjectTo<FacilityResponse>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
-//            return facilities.Adapt<IEnumerable<FacilityResponse>>();
-//        }
+            return roomsResponse;
+        }
 
-//        public async Task<Result<FacilityResponse>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
-//        {
-//            var facility = await _facilityRepository.Get(f => f.Id == id && f.IsActive)
-//                    .SingleOrDefaultAsync(cancellationToken);
-//            if (facility is null)
-//                return Result.Failure<FacilityResponse>(FacilityErrors.NotFound);
+        public async Task<ResponseVM<FacilityResponse>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var facility = await _facilityRepository.GetOneByIdAsync(id);
 
-//            var response = facility.Adapt<FacilityResponse>();
-//            return Result.Success(response);
-//        }
+            if (facility is null)
+                return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityNotFound, "Facility not found");
 
-//        public async Task<Result<FacilityResponse>> AddAsync(FacilityRequest request, CancellationToken cancellationToken = default)
-//        {
-//            var isfacilityExists = await _facilityRepository.AnyAsync(rt => rt.Name == request.Name, cancellationToken);
-//            if (isfacilityExists)
-//                return Result.Failure<FacilityResponse>(FacilityErrors.AlreadyExists);
+            var facilityResponse = _mapper.Map<FacilityResponse>(facility);
 
-//            var facility = request.Adapt<Facility>();
-//            var addedFacility = await _facilityRepository.AddAsync(facility);
+            return new SuccessResponseVM<FacilityResponse>(facilityResponse, "Successful");
+        }
 
-//            return Result.Success(addedFacility.Adapt<FacilityResponse>());
-//        }
+        public async Task<ResponseVM<FacilityResponse>> AddAsync(FacilityRequest request, CancellationToken cancellationToken = default)
+        {
+            var isfacilityExists = await _facilityRepository.AnyAsync(rt => rt.Name == request.Name, cancellationToken);
+            if (isfacilityExists)
+                return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityAlreadyExists, "Facility Already Exists");
 
-//        public async Task<Result> UpdateAsync(int id, FacilityRequest request, CancellationToken cancellationToken = default)
-//        {
-//            var isfacilityExists = await _facilityRepository.AnyAsync(rt => rt.Name == request.Name && rt.Id != id, cancellationToken);
-//            if (isfacilityExists)
-//                return Result.Failure(FacilityErrors.AlreadyExists);
+            var facility = _mapper.Map<Facility>(request);
+            var addedFacility = await _facilityRepository.AddAsync(facility);
 
-//            var facility = await _facilityRepository.Get(rt => rt.Id == id && rt.IsActive)
-//                    .SingleOrDefaultAsync(cancellationToken);
-//            if (facility is null)
-//                return Result.Failure(FacilityErrors.NotFound);
+            var response = _mapper.Map<FacilityResponse>(addedFacility);
 
-//            await _facilityRepository.UpdateAsync(x => x.Id == id,
-//                s => s
-//                    .SetProperty(y => y.Name, request.Name)
+            return new SuccessResponseVM<FacilityResponse>(response, "Successful");
+        }
 
-//                );
+        public async Task<ResponseVM<FacilityResponse>> UpdateAsync(int id, FacilityRequest request, CancellationToken cancellationToken = default)
+        {
+            var isfacilityExists = await _facilityRepository.AnyAsync(rt => rt.Name == request.Name && rt.Id != id, cancellationToken);
+            if (isfacilityExists)
+                return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityAlreadyExists, "Facility Already Exists");
 
-//            return Result.Success();
-//        }
+            var facility = await _facilityRepository.GetOneWithTrackingAsync(rt => rt.Id == id && rt.IsActive);
+            if (facility is null)
+                return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityNotFound, "Facility not found");
 
-//        public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
-//        {
-//            var facility = await _facilityRepository.Get(f => f.Id == id)
-//                .Include(f => f.Rooms)
-//                .FirstOrDefaultAsync(cancellationToken);
+            facility.Name = request.Name;
+            await _facilityRepository.SaveChangesAsync(cancellationToken);
 
-//            if (facility is null)
-//                return Result.Failure(FacilityErrors.NotFound);
+            var response = _mapper.Map<FacilityResponse>(facility);
 
-//            if (facility.Rooms.Count != 0)
-//                return Result.Failure(FacilityErrors.InUse);
+            return new SuccessResponseVM<FacilityResponse>(response, "Successful");
+        }
 
-//            var isDeleted = await _facilityRepository.DeleteAsync(id);
-//            if (!isDeleted)
-//                return Result.Failure(RoomTypeErrors.NotFound);
+        public async Task<ResponseVM<FacilityResponse>> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var facility = await _facilityRepository.Get(f => f.Id == id)
+                .Select(x => new
+                {
+                    Facility = x,
+                    x.Rooms
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
-//            return Result.Success();
-//        }
-//    }
-//}
+            if (facility is null || facility.Facility is null)
+                return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityNotFound, "Facility not found");
+
+            if (facility.Rooms.Count != 0)
+                return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityInUse, "Facility In Use");
+
+            var deletedFacility = await _facilityRepository.DeleteAsync(id);
+
+            var response = _mapper.Map<FacilityResponse>(deletedFacility);
+
+            return new SuccessResponseVM<FacilityResponse>(response, "Successful");
+        }
+    }
+}
