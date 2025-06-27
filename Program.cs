@@ -2,6 +2,7 @@
 using Hotel_Management.Data;
 using Hotel_Management.DTOs.Reservation;
 using Hotel_Management.Services;
+using Scalar.AspNetCore;
 
 namespace Hotel_Management
 {
@@ -19,7 +20,8 @@ namespace Hotel_Management
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ApplicationDbContext>();
-            builder.Services.AddScoped< ReservationService>();
+            builder.Services.AddScoped<ReservationService>();
+            builder.Services.AddScoped<OfferService>();
 
             builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
 
@@ -28,6 +30,7 @@ namespace Hotel_Management
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.MapScalarApiReference();
                 app.MapOpenApi();
             }
 
