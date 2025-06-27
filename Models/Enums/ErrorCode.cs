@@ -18,6 +18,18 @@
         RoomBooked = 202,
         #endregion
 
-      
+
+        #region User
+        UserUnauthorized = 300,
+        #endregion
+
+        #region Offer
+        StartDateAlreadyExceed = 400,
+        StartDateMustBeBeforeEndDate=401,
+        OfferNotFound=402,
+        ThereShouldBeAtLeastOneRoom=403
+        #endregion
+
+
     }
 }

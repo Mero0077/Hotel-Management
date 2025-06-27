@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+
 namespace Hotel_Management
 {
     public class Program
@@ -23,6 +24,7 @@ namespace Hotel_Management
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ApplicationDbContext>();
+
 
             var key = Encoding.ASCII.GetBytes(Constants.SecretKey);
             builder.Services.AddAuthentication(opt=>opt.DefaultAuthenticateScheme=  JwtBearerDefaults.AuthenticationScheme)
@@ -57,6 +59,9 @@ namespace Hotel_Management
           
 
             builder.Services.AddScoped< ReservationService>();
+            builder.Services.AddScoped<ReservationService>();
+            builder.Services.AddScoped<OfferService>();
+
 
             builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
 
@@ -65,6 +70,7 @@ namespace Hotel_Management
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.MapScalarApiReference();
                 app.MapOpenApi();
             }
 

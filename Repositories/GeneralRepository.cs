@@ -115,7 +115,6 @@ namespace Hotel_Management.Repositories
             {
                 res.IsDeleted = true;
                 await _context.SaveChangesAsync();
-
             }
             return res;
         }
