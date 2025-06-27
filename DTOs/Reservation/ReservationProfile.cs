@@ -8,9 +8,15 @@ namespace Hotel_Management.DTOs.Reservation
     {
         public ReservationProfile()
         {
-            CreateMap<ReservationVM, ReservationRequest>();
+            CreateMap<ReservationVM, ReservationRequest>().ReverseMap();
             CreateMap<ReservationRequest, Hotel_Management.Models.Reservation>();
             CreateMap<Hotel_Management.Models.Reservation, ReservationVM>();
+
+            CreateMap<ReservationUpdateVM, ReservationUpdateRequest>().ReverseMap();
+            CreateMap<ReservationUpdateRequest, Hotel_Management.Models.Reservation>();
+            CreateMap<Hotel_Management.Models.Reservation, ReservationUpdateVM>();
+
+            CreateMap<Hotel_Management.Models.Reservation, ReservationCancelVM>();
         }
     }
 }
