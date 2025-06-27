@@ -23,5 +23,10 @@ namespace Hotel_Management.Services
 
             return true;
         }
+
+        public bool CheckFeatureAccess(Features feature,Role role)
+        {
+            return _generalRepository.Get(e=>e.Role==role && e.Feature==feature).Any();
+        }
     }
 }

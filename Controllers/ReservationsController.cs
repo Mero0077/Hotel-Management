@@ -52,7 +52,8 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpGet("GetAll")]
-        [Authorize(Policy ="All")]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments =new object[] {Features.GetAllReservation})]
         public ResponseVM<IEnumerable<ReservationVM>> GetAllReservations()
         {
             var res= _reservationService.GetAllReservations();

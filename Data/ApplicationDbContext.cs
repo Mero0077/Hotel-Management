@@ -15,9 +15,10 @@ namespace Hotel_Management.Data
         public DbSet<RoomType> RoomTypes { get; set; }
         public DbSet<RoomImage> RoomImages { get; set; }
 
+        public DbSet<RoomOffer> RoomOffers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=HotelDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True")
+            optionsBuilder.UseSqlServer("Server=.;Database=HotelManagement;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True")
                  .LogTo(log => Debug.WriteLine(log), LogLevel.Information).EnableSensitiveDataLogging(true).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
     }

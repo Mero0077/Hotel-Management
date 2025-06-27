@@ -3,9 +3,13 @@ using Hotel_Management.Data;
 using Hotel_Management.DTOs.Reservation;
 using Hotel_Management.Repositories;
 using Hotel_Management.Services;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+=======
+using Scalar.AspNetCore;
+>>>>>>> 52cdda6aad8d4bebf01e90a6eceeda0042cc86d0
 
 namespace Hotel_Management
 {
@@ -23,6 +27,7 @@ namespace Hotel_Management
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ApplicationDbContext>();
+<<<<<<< HEAD
 
             var key = Encoding.ASCII.GetBytes(Constants.SecretKey);
             builder.Services.AddAuthentication(opt=>opt.DefaultAuthenticateScheme=  JwtBearerDefaults.AuthenticationScheme)
@@ -57,6 +62,10 @@ namespace Hotel_Management
           
 
             builder.Services.AddScoped< ReservationService>();
+=======
+            builder.Services.AddScoped<ReservationService>();
+            builder.Services.AddScoped<OfferService>();
+>>>>>>> 52cdda6aad8d4bebf01e90a6eceeda0042cc86d0
 
             builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
 
@@ -65,6 +74,7 @@ namespace Hotel_Management
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.MapScalarApiReference();
                 app.MapOpenApi();
             }
 
