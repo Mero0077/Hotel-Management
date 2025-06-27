@@ -1,7 +1,11 @@
 
 using Hotel_Management.Data;
 using Hotel_Management.DTOs.Reservation;
+using Hotel_Management.Repositories;
 using Hotel_Management.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Hotel_Management
 {
@@ -19,6 +23,39 @@ namespace Hotel_Management
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ApplicationDbContext>();
+
+            var key = Encoding.ASCII.GetBytes(Constants.SecretKey);
+            builder.Services.AddAuthentication(opt=>opt.DefaultAuthenticateScheme=  JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>{
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
+                        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                        ValidAudience = builder.Configuration["Front_Audience"],
+
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                      
+
+
+                    };
+
+            });
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("All", policy => policy.RequireRole("Student,Instructor"));
+            });
+
+            builder.Services.AddScoped(typeof(GeneralRepository<>));
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<RoleFeatureService>();
+          
+
             builder.Services.AddScoped< ReservationService>();
 
             builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
@@ -33,6 +70,7 @@ namespace Hotel_Management
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

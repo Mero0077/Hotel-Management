@@ -1,6 +1,6 @@
 ﻿namespace Hotel_Management.Models
 {
-    public class Customer
+    public class Customer:BaseModel
     {
     }
 }
