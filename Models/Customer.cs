@@ -1,10 +1,10 @@
-﻿namespace Hotel_Management.Models
+namespace Hotel_Management.Models
 {
-<<<<<<< HEAD
-    public class Customer:BaseModel
-=======
+<<<<<<<<< Temporary merge branch 1
     public class Customer : BaseModel
->>>>>>> 52cdda6aad8d4bebf01e90a6eceeda0042cc86d0
+=========
+    public class Customer:BaseModel
+>>>>>>>>> Temporary merge branch 2
     {
 
     }

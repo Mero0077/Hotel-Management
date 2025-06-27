@@ -11,6 +11,7 @@ using System.Text;
 using Scalar.AspNetCore;
 >>>>>>> 52cdda6aad8d4bebf01e90a6eceeda0042cc86d0
 
+
 namespace Hotel_Management
 {
     public class Program
