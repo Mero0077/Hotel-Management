@@ -5,6 +5,7 @@ using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
 using Hotel_Management.Models.ViewModels.Reservations;
 using Hotel_Management.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +52,7 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpGet("GetAll")]
+        [Authorize(Policy ="All")]
         public ResponseVM<IEnumerable<ReservationVM>> GetAllReservations()
         {
             var res= _reservationService.GetAllReservations();

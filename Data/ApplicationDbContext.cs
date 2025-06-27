@@ -8,6 +8,12 @@ namespace Hotel_Management.Data
     {
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoleFeature> RoleFeatures { get; set; }    
+        public DbSet<User> Users { get; set; }
+        public DbSet<Offer> Offers { get; set; }
+        public DbSet<Facility> Facilities { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; }
 
         public DbSet<RoomOffer> RoomOffers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
