@@ -3,9 +3,11 @@ using Hotel_Management.Data;
 using Hotel_Management.DTOs.Reservation;
 using Hotel_Management.Repositories;
 using Hotel_Management.Services;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
 
 
 namespace Hotel_Management
@@ -32,8 +34,8 @@ namespace Hotel_Management
                     opt.TokenValidationParameters = new TokenValidationParameters
                     {
                         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
-                        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                        ValidAudience = builder.Configuration["Front_Audience"],
+                        ValidIssuer = Constants.Issuer,
+                        ValidAudience = Constants.Audience,
 
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -59,6 +61,7 @@ namespace Hotel_Management
           
 
             builder.Services.AddScoped< ReservationService>();
+
             builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<OfferService>();
 
@@ -70,7 +73,7 @@ namespace Hotel_Management
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapScalarApiReference();
+                //app.MapScalarApiReference();
                 app.MapOpenApi();
             }
 
