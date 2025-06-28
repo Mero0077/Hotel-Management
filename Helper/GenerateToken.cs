@@ -1,4 +1,5 @@
-﻿using Hotel_Management.DTOs.Account;
+﻿using Hotel_Management.Data;
+using Hotel_Management.DTOs.Account;
 using Hotel_Management.Models.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -24,8 +25,9 @@ namespace Hotel_Management.Helper
                 SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials
                 (new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
                 Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature),
-                Issuer = "JWT:ValidIssuer",
-                Audience = "Front_Audience"
+                Issuer = Constants.Issuer,
+                Audience = Constants.Audience,
+
             };
 
             var token= tokenHandler.CreateToken (tokenDescriptor);

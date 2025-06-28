@@ -33,12 +33,14 @@ namespace Hotel_Management.Controllers
             return true;
         }
 
-
+      
         private static bool DateChecker(DateTime StartDate, DateTime EndDate)
         {
             return StartDate < DateTime.UtcNow.Date || EndDate <= StartDate.Date;
         }
 
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetReservation })]
         [HttpGet("{id}")]
         public ResponseVM<ReservationVM> GetReservation(int id)
         {
@@ -60,7 +62,10 @@ namespace Hotel_Management.Controllers
             var mapped= _mapper.Map<IEnumerable<ReservationVM>>(res);
             return new SuccessResponseVM<IEnumerable<ReservationVM>>(mapped);
         }
+
         [HttpPost("")]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.AddReservation })]
         public async Task<ResponseVM<ReservationVM>> Reserve([FromBody] ReservationVM reservation)
         {
             if (DateChecker(reservation.CheckInDate, reservation.CheckInDate))
@@ -77,6 +82,8 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpPatch("cancel/{Id}")]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.CancelRseervation })]
         public async Task<ResponseVM<ReservationCancelVM>> Cancel([FromRoute] int Id)
         {
             var res = await _reservationService.Cancel(Id);
@@ -88,6 +95,8 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpPatch]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.EditReservation })]
         public async Task<ResponseVM<ReservationUpdateVM>> Update([FromBody] ReservationUpdateVM reservationUpdateVM)
         {
             if (DateChecker(reservationUpdateVM.CheckInDate, reservationUpdateVM.CheckInDate))

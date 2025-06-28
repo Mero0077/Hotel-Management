@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hotel_Management.Migrations
 {
     /// <inheritdoc />
-    public partial class addInitial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,7 @@ namespace Hotel_Management.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Facility",
+                name: "Facilities",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -63,11 +63,11 @@ namespace Hotel_Management.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Facility", x => x.Id);
+                    table.PrimaryKey("PK_Facilities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Offer",
+                name: "Offers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -84,11 +84,31 @@ namespace Hotel_Management.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Offer", x => x.Id);
+                    table.PrimaryKey("PK_Offers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoomType",
+                name: "RoleFeatures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    Feature = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleFeatures", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoomTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -104,7 +124,30 @@ namespace Hotel_Management.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoomType", x => x.Id);
+                    table.PrimaryKey("PK_RoomTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,9 +173,9 @@ namespace Hotel_Management.Migrations
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rooms_RoomType_RoomTypeId",
+                        name: "FK_Rooms_RoomTypes_RoomTypeId",
                         column: x => x.RoomTypeId,
-                        principalTable: "RoomType",
+                        principalTable: "RoomTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -148,9 +191,9 @@ namespace Hotel_Management.Migrations
                 {
                     table.PrimaryKey("PK_FacilityRoom", x => new { x.FacilitiesId, x.RoomsId });
                     table.ForeignKey(
-                        name: "FK_FacilityRoom_Facility_FacilitiesId",
+                        name: "FK_FacilityRoom_Facilities_FacilitiesId",
                         column: x => x.FacilitiesId,
-                        principalTable: "Facility",
+                        principalTable: "Facilities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -206,7 +249,7 @@ namespace Hotel_Management.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoomImage",
+                name: "RoomImages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -223,9 +266,9 @@ namespace Hotel_Management.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoomImage", x => x.Id);
+                    table.PrimaryKey("PK_RoomImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoomImage_Rooms_RoomId",
+                        name: "FK_RoomImages_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
@@ -251,9 +294,9 @@ namespace Hotel_Management.Migrations
                 {
                     table.PrimaryKey("PK_RoomOffers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoomOffers_Offer_OfferId",
+                        name: "FK_RoomOffers_Offers_OfferId",
                         column: x => x.OfferId,
-                        principalTable: "Offer",
+                        principalTable: "Offers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -285,8 +328,8 @@ namespace Hotel_Management.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoomImage_RoomId",
-                table: "RoomImage",
+                name: "IX_RoomImages_RoomId",
+                table: "RoomImages",
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
@@ -315,13 +358,19 @@ namespace Hotel_Management.Migrations
                 name: "Reservations");
 
             migrationBuilder.DropTable(
-                name: "RoomImage");
+                name: "RoleFeatures");
+
+            migrationBuilder.DropTable(
+                name: "RoomImages");
 
             migrationBuilder.DropTable(
                 name: "RoomOffers");
 
             migrationBuilder.DropTable(
-                name: "Facility");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Facilities");
 
             migrationBuilder.DropTable(
                 name: "CustomerFeedback");
@@ -330,13 +379,13 @@ namespace Hotel_Management.Migrations
                 name: "Customer");
 
             migrationBuilder.DropTable(
-                name: "Offer");
+                name: "Offers");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
 
             migrationBuilder.DropTable(
-                name: "RoomType");
+                name: "RoomTypes");
         }
     }
 }
