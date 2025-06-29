@@ -27,15 +27,11 @@ namespace Hotel_Management
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-<<<<<<< HEAD
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            builder.Services.AddScoped(typeof(GeneralRepository<>));
-=======
-            builder.Services.AddDbContext<ApplicationDbContext>();
 
 
             var key = Encoding.ASCII.GetBytes(Constants.SecretKey);
@@ -69,7 +65,6 @@ namespace Hotel_Management
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<RoleFeatureService>();
           
->>>>>>> 04ba319229d4a3dbebc5a2c7de5c49bb78611931
 
             builder.Services.AddScoped< ReservationService>();
             builder.Services.AddScoped<FacilityService>();

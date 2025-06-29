@@ -148,13 +148,9 @@ namespace Hotel_Management.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-<<<<<<< HEAD
-                    b.Property<decimal?>("DiscountPercentage")
-                        .HasColumnType("decimal(18,2)");
-=======
+
                     b.Property<double>("DiscountPercentage")
                         .HasColumnType("float");
->>>>>>> 04ba319229d4a3dbebc5a2c7de5c49bb78611931
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
