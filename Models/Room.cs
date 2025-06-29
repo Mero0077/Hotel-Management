@@ -22,6 +22,6 @@ namespace Hotel_Management.Models
         public ICollection<Facility> Facilities { get; set; } = [];
         public ICollection<RoomImage> RoomImages { get; set; } = [];
         public ICollection<Reservation> Reservations { get; set; } = [];
-        public ICollection<Offer> ApplicableOffers { get; set; } = [];
+        public ICollection<RoomOffer> RoomOffers { get; set; } = [];
     }
 }

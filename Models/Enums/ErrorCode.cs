@@ -8,6 +8,7 @@
         ReservationNotFound = 100,
         InvalidReservation = 101,
         ReservationExists = 102,
+        ReservateDateInvalid=103,
         #endregion
 
 
@@ -35,5 +36,21 @@
         RoomImageExtensionIsNotValid = 501,
         #endregion
 
+<<<<<<< HEAD
+=======
+
+        #region User
+        UserUnauthorized = 300,
+        #endregion
+
+        #region Offer
+        StartDateAlreadyExceed = 400,
+        StartDateMustBeBeforeEndDate=401,
+        OfferNotFound=402,
+        ThereShouldBeAtLeastOneRoom=403
+        #endregion
+
+
+>>>>>>> 04ba319229d4a3dbebc5a2c7de5c49bb78611931
     }
 }

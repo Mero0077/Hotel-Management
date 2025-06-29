@@ -5,6 +5,7 @@ using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
 using Hotel_Management.Models.ViewModels.Reservations;
 using Hotel_Management.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -32,16 +33,44 @@ namespace Hotel_Management.Controllers
             return true;
         }
 
-        [HttpGet]
+      
+        private static bool DateChecker(DateTime StartDate, DateTime EndDate)
+        {
+            return StartDate < DateTime.UtcNow.Date || EndDate <= StartDate.Date;
+        }
+
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetReservation })]
+        [HttpGet("{id}")]
+        public ResponseVM<ReservationVM> GetReservation(int id)
+        {
+            var res= _reservationService.GetReservation(id);
+            if (res == null)
+                return new FailureResponseVM<ReservationVM>(ErrorCode.ReservationNotFound, "Reservation not found!");
+
+            var mapped= _mapper.Map<ReservationVM>(res);
+                return new SuccessResponseVM<ReservationVM>(mapped, "Reservation retrieved!.");
+
+        }
+
+        [HttpGet("GetAll")]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments =new object[] {Features.GetAllReservation})]
         public ResponseVM<IEnumerable<ReservationVM>> GetAllReservations()
         {
             var res= _reservationService.GetAllReservations();
             var mapped= _mapper.Map<IEnumerable<ReservationVM>>(res);
             return new SuccessResponseVM<IEnumerable<ReservationVM>>(mapped);
         }
-        [HttpPost("e")]
+
+        [HttpPost("")]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.AddReservation })]
         public async Task<ResponseVM<ReservationVM>> Reserve([FromBody] ReservationVM reservation)
         {
+            if (DateChecker(reservation.CheckInDate, reservation.CheckInDate))
+                return new FailureResponseVM<ReservationVM>(ErrorCode.ReservateDateInvalid,"You must enter a valid date!");
+
             var Reservation = _mapper.Map<ReservationRequest>(reservation);
             var result = await _reservationService.ReserveRoom(Reservation);
 
@@ -53,6 +82,8 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpPatch("cancel/{Id}")]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.CancelRseervation })]
         public async Task<ResponseVM<ReservationCancelVM>> Cancel([FromRoute] int Id)
         {
             var res = await _reservationService.Cancel(Id);
@@ -64,8 +95,13 @@ namespace Hotel_Management.Controllers
         }
 
         [HttpPatch]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.EditReservation })]
         public async Task<ResponseVM<ReservationUpdateVM>> Update([FromBody] ReservationUpdateVM reservationUpdateVM)
         {
+            if (DateChecker(reservationUpdateVM.CheckInDate, reservationUpdateVM.CheckInDate))
+                return new FailureResponseVM<ReservationUpdateVM>(ErrorCode.ReservateDateInvalid, "You must enter a valid date!");
+
             var Reservation = _mapper.Map<ReservationUpdateRequest>(reservationUpdateVM);
             var res= await _reservationService.Update(Reservation);
             if (res==null)
