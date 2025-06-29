@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using Azure;
 using Hotel_Management.DTOs.Facilities;
 using Hotel_Management.DTOs.RoomTypes;
-using Hotel_Management.Migrations;
 using Hotel_Management.Models;
 using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hotel_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250624181232_test")]
-    partial class test
+    [Migration("20250629153332_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,9 @@ namespace Hotel_Management.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -82,6 +85,9 @@ namespace Hotel_Management.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -109,6 +115,9 @@ namespace Hotel_Management.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -142,18 +151,17 @@ namespace Hotel_Management.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("DiscountPercentage")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("DiscountPercentage")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("OfferName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -166,7 +174,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Offer");
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Reservation", b =>
@@ -195,8 +203,11 @@ namespace Hotel_Management.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FeedbackId")
+                    b.Property<int?>("FeedbackId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -230,6 +241,43 @@ namespace Hotel_Management.Migrations
                     b.ToTable("Reservations");
                 });
 
+            modelBuilder.Entity("Hotel_Management.Models.RoleFeature", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Feature")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoleFeatures");
+                });
+
             modelBuilder.Entity("Hotel_Management.Models.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -247,6 +295,9 @@ namespace Hotel_Management.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -298,6 +349,9 @@ namespace Hotel_Management.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsCoverImage")
                         .HasColumnType("bit");
 
@@ -317,7 +371,48 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomImage");
+                    b.ToTable("RoomImages");
+                });
+
+            modelBuilder.Entity("Hotel_Management.Models.RoomOffer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OfferId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("RoomOffers");
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.RoomType", b =>
@@ -338,6 +433,9 @@ namespace Hotel_Management.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -356,19 +454,54 @@ namespace Hotel_Management.Migrations
                     b.ToTable("RoomTypes");
                 });
 
-            modelBuilder.Entity("OfferRoom", b =>
+            modelBuilder.Entity("Hotel_Management.Models.User", b =>
                 {
-                    b.Property<int>("ApplicableOffersId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomsId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.HasKey("ApplicableOffersId", "RoomsId");
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("RoomsId");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("OfferRoom");
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("FacilityRoom", b =>
@@ -396,9 +529,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasOne("Hotel_Management.Models.CustomerFeedback", "Feedback")
                         .WithMany()
-                        .HasForeignKey("FeedbackId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FeedbackId");
 
                     b.HasOne("Hotel_Management.Models.Room", "Room")
                         .WithMany("Reservations")
@@ -435,19 +566,28 @@ namespace Hotel_Management.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("OfferRoom", b =>
+            modelBuilder.Entity("Hotel_Management.Models.RoomOffer", b =>
                 {
-                    b.HasOne("Hotel_Management.Models.Offer", null)
-                        .WithMany()
-                        .HasForeignKey("ApplicableOffersId")
+                    b.HasOne("Hotel_Management.Models.Offer", "Offer")
+                        .WithMany("RoomOffers")
+                        .HasForeignKey("OfferId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Hotel_Management.Models.Room", null)
-                        .WithMany()
-                        .HasForeignKey("RoomsId")
+                    b.HasOne("Hotel_Management.Models.Room", "Room")
+                        .WithMany("RoomOffers")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("Hotel_Management.Models.Offer", b =>
+                {
+                    b.Navigation("RoomOffers");
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Room", b =>
@@ -455,6 +595,8 @@ namespace Hotel_Management.Migrations
                     b.Navigation("Reservations");
 
                     b.Navigation("RoomImages");
+
+                    b.Navigation("RoomOffers");
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.RoomType", b =>

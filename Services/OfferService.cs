@@ -14,17 +14,17 @@ namespace Hotel_Management.Services
         private readonly GeneralRepository<Offer> _OfferRepository;
         private readonly GeneralRepository<Room> _RoomRepository;
         private readonly GeneralRepository<RoomOffer> _RoomOfferRepository;
-        public OfferService(IMapper mapper) 
+        public OfferService(IMapper mapper, GeneralRepository<Offer> OfferRepository, GeneralRepository<Room> RoomRepository, GeneralRepository<RoomOffer> RoomOfferRepository) 
         {
             this._mapper = mapper;
-            _OfferRepository = new GeneralRepository<Offer>();
-            _RoomRepository =  new GeneralRepository<Room>();
-            _RoomOfferRepository = new GeneralRepository<RoomOffer>();
+            _OfferRepository = OfferRepository;
+            _RoomRepository = RoomRepository;
+            _RoomOfferRepository = RoomOfferRepository;
         }
 
         public async Task<Offer?> IsOfferExistsAsync(int offerId)
         {
-            var offer = await _OfferRepository.GetOneWithTracking(e=>e.Id==offerId);
+            var offer = await _OfferRepository.GetOneWithTrackingAsync(e=>e.Id==offerId);
             if (offer == null) return null;
             return offer;
         }
@@ -47,15 +47,15 @@ namespace Hotel_Management.Services
                 return dateValidationResult;
 
             var offer = _mapper.Map<Offer>(requestDto);
-            await _OfferRepository.Add(offer);
+            await _OfferRepository.AddAsync(offer);
 
             foreach (var roomId in requestDto.RoomIds)
             {
                 //Need To Modify It and Call The RoomService Instead of using _RoomRepo
-                var room = await _RoomRepository.GetOneById(roomId);
+                var room = await _RoomRepository.GetOneByIdAsync(roomId);
                 if(room == null)  return new FailureResponseVM<CreateOfferRequestDto>(ErrorCode.RoomNotFound);
 
-                await _RoomOfferRepository.Add(new RoomOffer
+                await _RoomOfferRepository.AddAsync(new RoomOffer
                 {
                     RoomId = roomId,
                     OfferId = offer.Id,
@@ -83,12 +83,12 @@ namespace Hotel_Management.Services
             var oldRoomIds = _RoomOfferRepository.Get(e=>e.OfferId == offer.Id && !e.IsDeleted);
             foreach (var oldRoomId in oldRoomIds)
             {
-                await _RoomOfferRepository.Delete(oldRoomId.Id);
+                await _RoomOfferRepository.DeleteAsync(oldRoomId.Id);
             }
 
             foreach(var newRoomId in requestDto.RoomIds)
             {
-                await _RoomOfferRepository.Add(new RoomOffer
+                await _RoomOfferRepository.AddAsync(new RoomOffer
                 {
                     RoomId = newRoomId,
                     OfferId = offer.Id,
@@ -97,7 +97,7 @@ namespace Hotel_Management.Services
             }
 
             _mapper.Map(requestDto, offer);
-            await _OfferRepository.Update(offer);
+            await _OfferRepository.UpdateAsync(offer);
             return new SuccessResponseVM<EditOfferRequestDto>(requestDto);
         }
 
@@ -107,7 +107,7 @@ namespace Hotel_Management.Services
             if (offer == null)
                 return new FailureResponseVM<bool>(ErrorCode.OfferNotFound);
             offer.IsActive = false;
-            await _OfferRepository.Delete(offer.Id);
+            await _OfferRepository.DeleteAsync(offer.Id);
             return new SuccessResponseVM<bool>(true);
         }
 

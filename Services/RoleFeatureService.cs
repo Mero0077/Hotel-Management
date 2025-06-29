@@ -19,7 +19,7 @@ namespace Hotel_Management.Services
                 Role = role,
                 Feature = feature
             };
-            await _generalRepository.Add( rolefeature );
+            await _generalRepository.AddAsync( rolefeature );
 
             return true;
         }
