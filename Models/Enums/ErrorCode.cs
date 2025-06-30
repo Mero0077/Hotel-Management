@@ -39,7 +39,12 @@
 
 
         #region User
-        UserUnauthorized = 300,
+        UserUnauthorized = 600,
+        PasswordIsnotMatched=601,
+        EmailNotFound =603,
+        OTPIsNotCorrect=604,
+        OTPExpired=605,
+        EmailOrPasswordIsWrong=606,
         #endregion
 
         #region Offer
