@@ -9,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Scalar.AspNetCore;
+using Hotel_Management.DTOs.Offers;
+using Hotel_Management.DTOs.Account;
+using Hotel_Management.Services.IServices;
 
 
 
@@ -34,7 +38,7 @@ namespace Hotel_Management
 
 
             var key = Encoding.ASCII.GetBytes(Constants.SecretKey);
-            builder.Services.AddAuthentication(opt=>opt.DefaultAuthenticateScheme=  JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(opt=>opt.DefaultAuthenticateScheme= JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>{
                     opt.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -65,23 +69,29 @@ namespace Hotel_Management
             builder.Services.AddScoped<RoleFeatureService>();
           
 
-            builder.Services.AddScoped< ReservationService>();
+            builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<FacilityService>();
             builder.Services.AddScoped<RoomTypeService>();
             builder.Services.AddScoped<RoomService>();
 
             builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<OfferService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddMemoryCache();
+            
 
-
-            builder.Services.AddAutoMapper(typeof(ReservationProfile).Assembly);
+            builder.Services.AddAutoMapper(
+                typeof(ReservationProfile).Assembly
+                ,typeof(OfferProfile).Assembly,
+                typeof(AccountProfile).Assembly
+                );
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                //app.MapScalarApiReference();
+                app.MapScalarApiReference();
                 app.MapOpenApi();
             }
 
