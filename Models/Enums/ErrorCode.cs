@@ -3,6 +3,8 @@
     public enum ErrorCode
     {
         NoError = 0,
+        InternalServerError=1,
+        UnauthorizedAccess=2,
 
         #region Reservation
         ReservationNotFound = 100,

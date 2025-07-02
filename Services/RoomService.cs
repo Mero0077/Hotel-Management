@@ -72,6 +72,7 @@ namespace Hotel_Management.Services
             room.RoomImages = images;
 
             var addedRoom = await _roomRepository.AddAsync(room);
+            await _roomRepository.SaveChangesAsync();
             var response = _mapper.Map<RoomResponse>(addedRoom);
 
             return new SuccessResponseVM<RoomResponse>(response, "Successful");
@@ -154,6 +155,7 @@ namespace Hotel_Management.Services
                 return new FailureResponseVM<RoomResponse>(ErrorCode.RoomBooked, "Room is booked");
 
             var deletedRoom = _roomRepository.DeleteAsync(id);
+            await _roomRepository.SaveChangesAsync();
             var response = _mapper.Map<RoomResponse>(deletedRoom);
             return new SuccessResponseVM<RoomResponse>(response, "Successful");
         }

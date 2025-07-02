@@ -46,6 +46,7 @@ namespace Hotel_Management.Services
 
             var roomType = _mapper.Map<RoomType>(request);
             var addedRoomType = await _roomTypeRepository.AddAsync(roomType);
+            await _roomRepository.SaveChangesAsync();
 
             var response = _mapper.Map<RoomTypeResponse>(addedRoomType);
             return new SuccessResponseVM<RoomTypeResponse>(response, "Successful");
@@ -63,6 +64,7 @@ namespace Hotel_Management.Services
 
             _mapper.Map(request, roomType);
             var addedRoomType = await _roomTypeRepository.SaveChangesAsync(cancellationToken);
+            await _roomTypeRepository.SaveChangesAsync();
 
             var response = _mapper.Map<RoomTypeResponse>(addedRoomType);
             return new SuccessResponseVM<RoomTypeResponse>(response, "Successful");

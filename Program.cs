@@ -13,6 +13,7 @@ using Scalar.AspNetCore;
 using Hotel_Management.DTOs.Offers;
 using Hotel_Management.DTOs.Account;
 using Hotel_Management.Services.IServices;
+using Hotel_Management.MiddleWares;
 
 
 
@@ -65,6 +66,8 @@ namespace Hotel_Management
             });
 
             builder.Services.AddScoped(typeof(GeneralRepository<>));
+            builder.Services.AddScoped<GlobalErrorHandlerMiddleware>();
+            builder.Services.AddScoped<TransactionsMiddleWare>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<RoleFeatureService>();
           
@@ -87,6 +90,8 @@ namespace Hotel_Management
                 );
 
             var app = builder.Build();
+            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+           
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -99,7 +104,7 @@ namespace Hotel_Management
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseMiddleware<TransactionsMiddleWare>();
 
             app.MapControllers();
 

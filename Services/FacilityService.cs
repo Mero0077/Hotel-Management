@@ -46,6 +46,7 @@ namespace HotelReservationSystem.api.Services.FacilitiesService
 
             var facility = _mapper.Map<Facility>(request);
             var addedFacility = await _facilityRepository.AddAsync(facility);
+            await _facilityRepository.SaveChangesAsync();
 
             var response = _mapper.Map<FacilityResponse>(addedFacility);
 
@@ -64,6 +65,7 @@ namespace HotelReservationSystem.api.Services.FacilitiesService
 
             facility.Name = request.Name;
             await _facilityRepository.SaveChangesAsync(cancellationToken);
+            await _facilityRepository.SaveChangesAsync();
 
             var response = _mapper.Map<FacilityResponse>(facility);
 
@@ -87,6 +89,7 @@ namespace HotelReservationSystem.api.Services.FacilitiesService
                 return new FailureResponseVM<FacilityResponse>(ErrorCode.FacilityInUse, "Facility In Use");
 
             var deletedFacility = await _facilityRepository.DeleteAsync(id);
+            await _facilityRepository.SaveChangesAsync();
 
             var response = _mapper.Map<FacilityResponse>(deletedFacility);
 
