@@ -4,6 +4,17 @@ A full-stack hotel booking system with dynamic pricing, role-based access contro
 
 ![Hotel Booking System](https://img.freepik.com/free-vector/hotel-booking-isometric-concept_1284-17947.jpg)
 
+
+## 📌 Overview
+**Hotel Management System** is a full-featured web application that simulates a real-world hotel booking experience similar to platforms like **Booking.com**. It allows users to:
+- Search and book rooms with available services (Wi-Fi, Sauna, etc.).
+- Modify their booking dates.
+- Submit reviews about the hotel and its services after checkout.
+- View dynamic room pricing based on the current season (summer, winter, etc.).
+- Explore different user roles (Admin, Staff, Customer) with dynamic access control.
+
+---
+
 ## 🌟 Features
 
 ### 1. Booking Management
@@ -34,6 +45,45 @@ A full-stack hotel booking system with dynamic pricing, role-based access contro
 - Centralized error handling
 - Transaction safety middleware
 - API documentation (Swagger/OpenAPI)
+
+### 5.🏨 Room Booking System
+- Book available rooms and select optional services.
+- Modify or cancel booking dates.
+- Automatic room availability updates.
+
+### 6.🧾 Room Services
+Each room can include:
+- Free or paid Wi-Fi.
+- Sauna.
+- Room service.
+- Additional customizable amenities.
+
+### 7.💸 Seasonal Pricing System
+- Room pricing is dynamically calculated based on the current **season/weather**.
+- Example: Higher prices in **summer**, lower in **winter**.
+
+### 8.👥 Profiles
+- **User Profile:** View and manage personal bookings and reviews.
+- **Staff Profile:** Hotel employees can manage room services and booking requests.
+- **Hotel Profile:** Hotel overview, services, reviews, and room status.
+
+### 9.📝 Review System
+- Users can review their **stay experience** and rate hotel services after checkout.
+
+---
+
+## 🧪 Architecture & Code Practices
+
+- **Clean Architecture:** Clear separation of concerns using:
+  - `DTOs` (Data Transfer Objects)
+  - `Entities`
+  - `Repositories`
+  - `Services`
+  - `Controllers`
+- **Middleware:** Centralized error handling and transaction safety.
+- **Scalable Design:** Easy to extend with new features or services.
+
+---
 
 ## 🛠️ Tech Stack
 
