@@ -15,11 +15,13 @@ namespace Hotel_Management.Services
         private readonly IMapper mapper;
         private readonly GeneralRepository<Reservation> _ReservationRepository;
         private readonly GeneralRepository<Room> _RoomRepository;
+        private DynamicPricingService _DynamicPricingService;
 
-        public ReservationService(IMapper mapper, GeneralRepository<Reservation> reservationRepository, GeneralRepository<Room> roomRepository)
+        public ReservationService(IMapper mapper, GeneralRepository<Reservation> reservationRepository, GeneralRepository<Room> roomRepository, DynamicPricingService dynamicPricingService)
         {
             _ReservationRepository = reservationRepository;
             _RoomRepository = roomRepository;
+            _DynamicPricingService = dynamicPricingService;
             this.mapper = mapper;
         }
 
@@ -28,9 +30,9 @@ namespace Hotel_Management.Services
             return startDate < DateTime.UtcNow.Date || endDate <= startDate.Date;
         }
 
-        private static decimal CalculateTotalCost(DateTime startDate, DateTime endDate, decimal price)
+        private  decimal CalculateTotalCost(DateTime startDate, DateTime endDate, decimal price)
         {
-            return (endDate - startDate).Days * price;
+            return (endDate - startDate).Days *  _DynamicPricingService.GetDynamicPricing(startDate,endDate,price);
         }
 
         private async Task ChangeRoomStatus(Room room, RoomStatus roomStatus)
@@ -68,7 +70,9 @@ namespace Hotel_Management.Services
             if (DateChecker(req.CheckInDate, req.CheckOutDate))
                 return new ErrorFailDTO<ReservationRequest>(ErrorCode.ReservateDateInvalid, "Invalid reservation dates.");
 
-            req.TotalCost = CalculateTotalCost(req.CheckInDate, req.CheckOutDate, room.PricePerNight);
+            var UpdatedPrice= CalculateTotalCost(req.CheckInDate, req.CheckOutDate, room.PricePerNight);
+            req.TotalCost = UpdatedPrice;
+            //req.TotalCost =  CalculateTotalCost(req.CheckInDate, req.CheckOutDate, room.PricePerNight);
             var reservation = mapper.Map<Reservation>(req);
 
            

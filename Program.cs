@@ -73,6 +73,7 @@ namespace Hotel_Management
           
 
             builder.Services.AddScoped<ReservationService>();
+            builder.Services.AddScoped<DynamicPricingService>();
             builder.Services.AddScoped<FacilityService>();
             builder.Services.AddScoped<RoomTypeService>();
             builder.Services.AddScoped<RoomService>();
