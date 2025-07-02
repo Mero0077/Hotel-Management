@@ -1,3 +1,4 @@
+using AutoMapper;
 using AutoMapper.Features;
 using Azure.Core;
 using Hotel_Management.DTOs.Rooms;
@@ -5,6 +6,7 @@ using Hotel_Management.Filters;
 using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
 using Hotel_Management.Models.ViewModels.Reservations;
+using Hotel_Management.Models.ViewModels.Rooms;
 using Hotel_Management.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,18 +19,20 @@ namespace Hotel_Management.Controllers
     public class RoomsController : ControllerBase
     {
         private RoomService _roomService;
+        private IMapper _mapper;
 
-        public RoomsController(RoomService roomService)
+        public RoomsController(RoomService roomService, IMapper mapper)
         {
             _roomService = roomService;
+            _mapper = mapper;
         }
 
         [Authorize]
         [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetAllRooms })]
         [HttpGet("")]
-        public async Task<ResponseVM<IEnumerable<RoomResponse>>> GetAllRooms(CancellationToken cancellationToken)
+        public async Task<ResponseVM<IEnumerable<RoomResponse>>> GetAllRooms([FromQuery] RoomFilterVM roomFilterVM, CancellationToken cancellationToken)
         {
-            var response = await _roomService.GetAllAsync(cancellationToken);
+            var response = await _roomService.GetAllAsync(_mapper.Map<RoomFilterDTO>(roomFilterVM),cancellationToken);
 
             return new SuccessResponseVM<IEnumerable<RoomResponse>>(response);
         }

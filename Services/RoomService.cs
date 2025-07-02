@@ -5,9 +5,12 @@ using Hotel_Management.DTOs.Rooms;
 using Hotel_Management.Models;
 using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
+using Hotel_Management.Models.ViewModels.Rooms;
 using Hotel_Management.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using PredicateExtensions;
+using System.Linq.Expressions;
 namespace Hotel_Management.Services
 {
     public class RoomService(IMapper mapper, IWebHostEnvironment webHostEnvironment, 
@@ -22,9 +25,35 @@ namespace Hotel_Management.Services
 
         private readonly string _imagesPath = $"{webHostEnvironment.WebRootPath}/wwwroot/roomImages";
 
-        public async Task<IEnumerable<RoomResponse>> GetAllAsync(CancellationToken cancellationToken = default)
+        private Expression<Func<Room, bool>> BuildRoomFilter(RoomFilterDTO filter)
         {
-            var roomsResponse = await _roomRepository.GetAll()
+            var predicate = PredicateExtensions.PredicateExtensions.Begin<Room>(true);
+
+            if (filter.MinPrice.HasValue)
+                predicate = predicate.And(r => r.PricePerNight >= filter.MinPrice.Value);
+
+            if (filter.MaxPrice.HasValue)
+                predicate = predicate.And(r => r.PricePerNight <= filter.MaxPrice.Value);
+
+            if (filter.MinCapacity.HasValue)
+                predicate = predicate.And(r => r.MaxOccupancy >= filter.MinCapacity.Value);
+
+            if (!string.IsNullOrEmpty(filter.RoomType))
+                predicate = predicate.And(r => r.RoomType.ToString() == filter.RoomType);
+
+            if (filter.CheckInDate.HasValue && filter.CheckOutDate.HasValue)
+            {
+                predicate = predicate.And(r =>  r.Status == RoomStatus.Available);
+            }
+
+            return predicate;
+        }
+
+
+        public async Task<IEnumerable<RoomResponse>> GetAllAsync(RoomFilterDTO roomFilterDTO,CancellationToken cancellationToken = default)
+        {
+            var predicate = BuildRoomFilter(roomFilterDTO);
+            var roomsResponse = await _roomRepository.GetAll().Where(predicate)
                 .ProjectTo<RoomResponse>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
