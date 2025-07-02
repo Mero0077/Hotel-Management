@@ -32,6 +32,7 @@ namespace Hotel_Management.Controllers
         [HttpGet("")]
         public async Task<ResponseVM<IEnumerable<RoomResponse>>> GetAllRooms([FromQuery] RoomFilterVM roomFilterVM, CancellationToken cancellationToken)
         {
+            /// hey
             var response = await _roomService.GetAllAsync(_mapper.Map<RoomFilterDTO>(roomFilterVM),cancellationToken);
 
             return new SuccessResponseVM<IEnumerable<RoomResponse>>(response);
