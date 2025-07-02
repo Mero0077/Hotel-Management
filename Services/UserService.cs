@@ -64,6 +64,7 @@ namespace Hotel_Management.Services
             user.Password = hasher.HashPassword(user, request.Password);
 
             await _generalRepository.AddAsync(user);
+            await _generalRepository.SaveChangesAsync();
             var response = _mapper.Map<UserRegisterResponseDTO>(user);
 
             return response;
@@ -99,6 +100,7 @@ namespace Hotel_Management.Services
                     var hasher = new PasswordHasher<User>();
                     user.Password = hasher.HashPassword(user, request.Password);
                     await _generalRepository.UpdateIncludeAsync(user,nameof(User.Password));
+                    await _generalRepository.SaveChangesAsync();
                     _memoryCache.Remove(request.Email);
                     return new ErrorSuccessDTO<User>(user);
                 }

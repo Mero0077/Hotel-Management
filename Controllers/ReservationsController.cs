@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Hotel_Management.DTOs.Reservation;
+using Hotel_Management.Filters;
 using Hotel_Management.Models;
 using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
@@ -18,8 +19,8 @@ namespace Hotel_Management.Controllers
     [ApiController]
     public class ReservationsController : ControllerBase
     {
-        private ReservationService _reservationService;
-        private IMapper _mapper;
+        private readonly ReservationService _reservationService;
+        private readonly IMapper _mapper;
 
         public ReservationsController(ReservationService reservationService, IMapper mapper)
         {
@@ -33,34 +34,32 @@ namespace Hotel_Management.Controllers
             return true;
         }
 
-      
-        private static bool DateChecker(DateTime StartDate, DateTime EndDate)
-        {
-            return StartDate < DateTime.UtcNow.Date || EndDate <= StartDate.Date;
-        }
-
         [Authorize]
         [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetReservation })]
         [HttpGet("{id}")]
-        public ResponseVM<ReservationVM> GetReservation(int id)
+        public async Task<ResponseVM<ReservationVM>> GetReservation(int id)
         {
-            var res= _reservationService.GetReservation(id);
-            if (res == null)
-                return new FailureResponseVM<ReservationVM>(ErrorCode.ReservationNotFound, "Reservation not found!");
+            var result = await _reservationService.GetReservation(id);
 
-            var mapped= _mapper.Map<ReservationVM>(res);
-                return new SuccessResponseVM<ReservationVM>(mapped, "Reservation retrieved!.");
+            if (!result.IsSuccess)
+                return new FailureResponseVM<ReservationVM>(result.errorCode, result.Message);
 
+            var mapped = _mapper.Map<ReservationVM>(result.Data);
+            return new SuccessResponseVM<ReservationVM>(mapped, result.Message);
         }
 
         [HttpGet("GetAll")]
         [Authorize]
-        [TypeFilter<CustomAuthorizeFilter>(Arguments =new object[] {Features.GetAllReservation})]
-        public ResponseVM<IEnumerable<ReservationVM>> GetAllReservations()
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetAllReservations })]
+        public async Task<ResponseVM<IEnumerable<ReservationVM>>> GetAllReservations()
         {
-            var res= _reservationService.GetAllReservations();
-            var mapped= _mapper.Map<IEnumerable<ReservationVM>>(res);
-            return new SuccessResponseVM<IEnumerable<ReservationVM>>(mapped);
+            var result = await _reservationService.GetAllReservations();
+
+            if (!result.IsSuccess)
+                return new FailureResponseVM<IEnumerable<ReservationVM>>(result.errorCode, result.Message);
+
+            var mapped = _mapper.Map<IEnumerable<ReservationVM>>(result.Data);
+            return new SuccessResponseVM<IEnumerable<ReservationVM>>(mapped, result.Message);
         }
 
         [HttpPost("")]
@@ -68,30 +67,29 @@ namespace Hotel_Management.Controllers
         [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.AddReservation })]
         public async Task<ResponseVM<ReservationVM>> Reserve([FromBody] ReservationVM reservation)
         {
-            if (DateChecker(reservation.CheckInDate, reservation.CheckInDate))
-                return new FailureResponseVM<ReservationVM>(ErrorCode.ReservateDateInvalid,"You must enter a valid date!");
-
-            var Reservation = _mapper.Map<ReservationRequest>(reservation);
-            var result = await _reservationService.ReserveRoom(Reservation);
+            // Let the service validate dates now!
+            var reservationRequest = _mapper.Map<ReservationRequest>(reservation);
+            var result = await _reservationService.ReserveRoom(reservationRequest);
 
             if (!result.IsSuccess)
                 return new FailureResponseVM<ReservationVM>(result.errorCode, result.Message);
 
             var reservationVM = _mapper.Map<ReservationVM>(result.Data);
-            return new SuccessResponseVM<ReservationVM>(reservationVM, "Reservation successful.");
+            return new SuccessResponseVM<ReservationVM>(reservationVM, result.Message);
         }
 
         [HttpPatch("cancel/{Id}")]
         [Authorize]
-        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.CancelRseervation })]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.CancelReservation })]
         public async Task<ResponseVM<ReservationCancelVM>> Cancel([FromRoute] int Id)
         {
-            var res = await _reservationService.Cancel(Id);
-            if(res==null)
-                return new FailureResponseVM<ReservationCancelVM>(ErrorCode.ReservationNotFound, "Reservation not found");
+            var result = await _reservationService.Cancel(Id);
 
-            var vm = _mapper.Map<ReservationCancelVM>(res);
-                return new SuccessResponseVM<ReservationCancelVM>(vm, "Reservation cancelled");
+            if (!result.IsSuccess)
+                return new FailureResponseVM<ReservationCancelVM>(result.errorCode, result.Message);
+
+            var vm = _mapper.Map<ReservationCancelVM>(result.Data);
+            return new SuccessResponseVM<ReservationCancelVM>(vm, result.Message);
         }
 
         [HttpPatch]
@@ -99,17 +97,15 @@ namespace Hotel_Management.Controllers
         [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.EditReservation })]
         public async Task<ResponseVM<ReservationUpdateVM>> Update([FromBody] ReservationUpdateVM reservationUpdateVM)
         {
-            if (DateChecker(reservationUpdateVM.CheckInDate, reservationUpdateVM.CheckInDate))
-                return new FailureResponseVM<ReservationUpdateVM>(ErrorCode.ReservateDateInvalid, "You must enter a valid date!");
+            var updateRequest = _mapper.Map<ReservationUpdateRequest>(reservationUpdateVM);
+            var result = await _reservationService.Update(updateRequest);
 
-            var Reservation = _mapper.Map<ReservationUpdateRequest>(reservationUpdateVM);
-            var res= await _reservationService.Update(Reservation);
-            if (res==null)
-                return new FailureResponseVM<ReservationUpdateVM>(ErrorCode.ReservationNotFound, "Reservation not found");
+            if (!result.IsSuccess)
+                return new FailureResponseVM<ReservationUpdateVM>(result.errorCode, result.Message);
 
-            var vm = _mapper.Map<ReservationUpdateVM>(res);
-            return new SuccessResponseVM<ReservationUpdateVM>(vm, "Reservation Updated");
+            var vm = _mapper.Map<ReservationUpdateVM>(result.Data);
+            return new SuccessResponseVM<ReservationUpdateVM>(vm, result.Message);
         }
-
     }
+
 }

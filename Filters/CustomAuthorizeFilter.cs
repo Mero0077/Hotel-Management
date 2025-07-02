@@ -26,7 +26,7 @@ namespace Hotel_Management.Filters
 
             if (!_roleFeatureService.CheckFeatureAccess(_feature, role))
             {
-                throw new UnauthorizedAccessException("You do not have permission to access this feature.");
+                throw new UnauthorizedAccessException("You do not have permission to access this feature ya gayyyyy.");
             }
 
             base.OnActionExecuting(context);

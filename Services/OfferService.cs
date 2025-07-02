@@ -62,6 +62,7 @@ namespace Hotel_Management.Services
                     IsActive = requestDto.IsActive,
                 });
             }
+            await _OfferRepository.SaveChangesAsync();
             
             return new SuccessResponseVM<CreateOfferRequestDto>(requestDto);
         }
@@ -98,6 +99,7 @@ namespace Hotel_Management.Services
 
             _mapper.Map(requestDto, offer);
             await _OfferRepository.UpdateAsync(offer);
+            await _OfferRepository.SaveChangesAsync();
             return new SuccessResponseVM<EditOfferRequestDto>(requestDto);
         }
 
@@ -108,6 +110,7 @@ namespace Hotel_Management.Services
                 return new FailureResponseVM<bool>(ErrorCode.OfferNotFound);
             offer.IsActive = false;
             await _OfferRepository.DeleteAsync(offer.Id);
+            await _OfferRepository.SaveChangesAsync();
             return new SuccessResponseVM<bool>(true);
         }
 

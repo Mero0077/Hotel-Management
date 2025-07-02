@@ -8,5 +8,6 @@ namespace Hotel_Management.DTOs.Error
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
         public ErrorCode errorCode { get; set; }
+        public string? TraceId { get; set; }
     }
 }

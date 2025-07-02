@@ -1,8 +1,12 @@
+using AutoMapper.Features;
 using Azure;
 using Hotel_Management.DTOs.Facilities;
 using Hotel_Management.DTOs.Rooms;
+using Hotel_Management.Filters;
+using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
 using HotelReservationSystem.api.Services.FacilitiesService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +18,9 @@ namespace Hotel_Management.Controllers
     {
         private readonly FacilityService _facilityService = facilityService;
 
+
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] {Features.GetAllFacilities })]
         [HttpGet("")]
         public async Task<ResponseVM<IEnumerable<FacilityResponse>>> GetAllFacilities(CancellationToken cancellationToken)
         {
@@ -21,6 +28,8 @@ namespace Hotel_Management.Controllers
             return new SuccessResponseVM<IEnumerable<FacilityResponse>>(response);
         }
 
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetFacility })]
         [HttpGet("{id}")]
         public async Task<ResponseVM<FacilityResponse>> GetFacilityById([FromRoute] int id, CancellationToken cancellationToken)
         {
@@ -28,6 +37,8 @@ namespace Hotel_Management.Controllers
             return result;
         }
 
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.AddFacility })]
         [HttpPost("")]
         public async Task<ResponseVM<FacilityResponse>> AddFacility([FromBody] FacilityRequest request, CancellationToken cancellationToken)
         {
@@ -35,6 +46,8 @@ namespace Hotel_Management.Controllers
             return result;
         }
 
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.EditFacility })]
         [HttpPut("{id}")]
         public async Task<ResponseVM<FacilityResponse>> UpdateFacility([FromRoute] int id, [FromBody] FacilityRequest request, CancellationToken cancellationToken)
         {
@@ -42,6 +55,8 @@ namespace Hotel_Management.Controllers
             return result;
         }
 
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.DeleteFacility })]
         [HttpDelete("{id}")]
         public async Task<ResponseVM<FacilityResponse>> DeleteFacility([FromRoute] int id, CancellationToken cancellationToken)
         {

@@ -17,7 +17,6 @@ namespace Hotel_Management.Repositories
             _context = context;
             _dbSet = _context.Set<T>();
         }
-
         public IQueryable<T> GetAll()
         {
             return _dbSet.Where(e => !e.IsDeleted);
@@ -40,14 +39,12 @@ namespace Hotel_Management.Repositories
         public async Task<T> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
             return entity;
         }
             public async Task UpdateIncludeAsync(T entity, params string[] modifiedProperties)
@@ -67,17 +64,15 @@ namespace Hotel_Management.Repositories
                     entityEntry = _context.ChangeTracker.Entries<T>().FirstOrDefault(x => x.Entity.Id == entity.Id);
                 }
 
-                foreach (var property in entityEntry.Properties)
+            foreach (var property in entityEntry.Properties)
+            {
+                if (modifiedProperties.Contains(property.Metadata.Name))
                 {
-                    if (modifiedProperties.Contains(property.Metadata.Name))
-                    {
-                        property.CurrentValue = entity.GetType().GetProperty(property.Metadata.Name).GetValue(entity);
-                        property.IsModified = true;
-                    }
+                    property.CurrentValue = entity.GetType().GetProperty(property.Metadata.Name).GetValue(entity);
+                    property.IsModified = true;
                 }
-
-                await _context.SaveChangesAsync();
             }
+      }
 
         //public void UpdateReflection(T entity, params string[] modifiedproperties) //modidified dh el7agat eli bs h3mlha update      
         //{
@@ -114,7 +109,6 @@ namespace Hotel_Management.Repositories
             if (res != null || !res.IsDeleted)
             {
                 res.IsDeleted = true;
-                await _context.SaveChangesAsync();
             }
             return res;
         }
