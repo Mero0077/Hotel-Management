@@ -1,78 +1,81 @@
-# Hotel Management System
- A modern Hotel Management System built with ASP.NET Core, following best practices in clean architecture, domain-driven design, middleware-based global error handling, and robust transactional workflows.
+# 🏨 Hotel Management System
 
-🚀 Overview
-This project is a work in progress backend for a hotel booking platform, inspired by large-scale systems.
-It covers core hotel operations:
+## 📌 Overview
+**Hotel Management System** is a full-featured web application that simulates a real-world hotel booking experience similar to platforms like **Booking.com**. It allows users to:
+- Search and book rooms with available services (Wi-Fi, Sauna, etc.).
+- Modify their booking dates.
+- Submit reviews about the hotel and its services after checkout.
+- View dynamic room pricing based on the current season (summer, winter, etc.).
+- Explore different user roles (Admin, Staff, Customer) with dynamic access control.
 
-Room & Reservation Management.
+---
 
-1- Room Types & Facilities.
+## 🧩 Key Features
 
-2- Offers & Promotions.
+### 🔐 Authentication & Authorization
+- Fully implemented login and registration system.
+- Role-based access control (Admin, Hotel Staff, Customer).
+- Dynamic role management.
 
-3- Advanced authorization with fine-grained Feature-based Access Control.
+### 🏨 Room Booking System
+- Book available rooms and select optional services.
+- Modify or cancel booking dates.
+- Automatic room availability updates.
 
-4- Centralized error handling and transaction safety via custom Middleware.
+### 🧾 Room Services
+Each room can include:
+- Free or paid Wi-Fi.
+- Sauna.
+- Room service.
+- Additional customizable amenities.
 
-5- Clean separation of DTOs, Entities, Repositories, Services, and Controllers.
+### 💸 Seasonal Pricing System
+- Room pricing is dynamically calculated based on the current **season/weather**.
+- Example: Higher prices in **summer**, lower in **winter**.
 
+### 👥 Profiles
+- **User Profile:** View and manage personal bookings and reviews.
+- **Staff Profile:** Hotel employees can manage room services and booking requests.
+- **Hotel Profile:** Hotel overview, services, reviews, and room status.
 
-⚙️ Key Features
+### 📝 Review System
+- Users can review their **stay experience** and rate hotel services after checkout.
 
-✅ Reservations
+---
 
-Create, update, cancel, and manage reservations
+## 🧪 Architecture & Code Practices
 
-Prevent double-bookings with transactional integrity
+- **Clean Architecture:** Clear separation of concerns using:
+  - `DTOs` (Data Transfer Objects)
+  - `Entities`
+  - `Repositories`
+  - `Services`
+  - `Controllers`
+- **Middleware:** Centralized error handling and transaction safety.
+- **Scalable Design:** Easy to extend with new features or services.
 
-Custom validation for dates and statuses
+---
 
-✅ Rooms
+## 🛠️ Tech Stack
+- **Backend:** .NET (ASP.NET Core)
+- **Database:** SQL Server (or any relational DB)
+- **Authentication:** JWT / Identity
+- **Architecture Style:** RESTful API
 
-CRUD operations for rooms
+---
 
-Change room status dynamically on reservation or cancellation
+## 🧑‍💻 Contributors
+- [Mero0077](https://github.com/Mero0077)
 
-Manage different room types
+---
 
-✅ Facilities
+## 📷 Screenshots (Optional)
+> Add images or GIFs here to show room booking, pricing, review, etc.
 
-Add, edit, delete facilities tied to rooms
+---
 
-✅ Offers
+## 🚀 How to Run the Project
 
-Create & apply promotional offers to reservations
-
-✅ Role-based & Feature-based Authorization
-
-Secure endpoints using custom AuthorizeFilter with fine-grained permissions
-
-✅ Robust Middleware
-
-Global error handler returns consistent error DTOs
-
-Transaction middleware wraps database operations in atomic units
-
-✅ Exception Strategy
-
-Uses domain-specific exceptions (NotFoundException, BusinessLogicException) instead of manual null checks
-
-Clean service layer with clear responsibilities
-
-
-
-📁 Project Structure
-
-📦 Hotel-Management
- ┣ 📂 Controllers       # API entry points
- ┣ 📂 Services          # Business logic
- ┣ 📂 Repositories      # Data access layer
- ┣ 📂 Models            # Entities, Enums
- ┣ 📂 DTOs              # Data Transfer Objects
- ┣ 📂 Middlewares       # Global error handling, transaction control
- ┣ 📂 Filters           # Custom authorization filters
- ┣ 📜 Program.cs        # Application startup
- ┣ 📜 appsettings.json  # Configuration
-
-
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Mero0077/Hotel-Management.git
