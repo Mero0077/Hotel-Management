@@ -62,17 +62,7 @@ Each room can include:
 - *Authentication:* JWT / Identity
 - *Architecture Style:* RESTful API
 
----
 
-## 🧑‍💻 Contributors
-- [Mero0077](https://github.com/Mero0077)
-
----
-
-## 📷 Screenshots (Optional)
-> Add images or GIFs here to show room booking, pricing, review, etc.
-
----
 
 ## 🚀 How to Run the Project
 
