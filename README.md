@@ -7,15 +7,15 @@ It covers core hotel operations:
 
 Room & Reservation Management.
 
-Room Types & Facilities.
+1- Room Types & Facilities.
 
-Offers & Promotions.
+2- Offers & Promotions.
 
-Advanced authorization with fine-grained Feature-based Access Control.
+3- Advanced authorization with fine-grained Feature-based Access Control.
 
-Centralized error handling and transaction safety via custom Middleware.
+4- Centralized error handling and transaction safety via custom Middleware.
 
-Clean separation of DTOs, Entities, Repositories, Services, and Controllers.
+5- Clean separation of DTOs, Entities, Repositories, Services, and Controllers.
 
 
 ⚙️ Key Features
