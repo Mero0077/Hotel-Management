@@ -1,5 +1,5 @@
 # Hotel Management System
-A modern Hotel Management System built with ASP.NET Core, following best practices in clean architecture, domain-driven design, middleware-based global error handling, and robust transactional workflows.
+ A modern Hotel Management System built with ASP.NET Core, following best practices in clean architecture, domain-driven design, middleware-based global error handling, and robust transactional workflows.
 
 🚀 Overview
 This project is a work in progress backend for a hotel booking platform, inspired by large-scale systems.
@@ -19,6 +19,7 @@ Clean separation of DTOs, Entities, Repositories, Services, and Controllers.
 
 
 ⚙️ Key Features
+
 ✅ Reservations
 
 Create, update, cancel, and manage reservations
