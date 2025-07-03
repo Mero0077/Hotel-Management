@@ -53,9 +53,13 @@
         StartDateAlreadyExceed = 400,
         StartDateMustBeBeforeEndDate=401,
         OfferNotFound=402,
-        ThereShouldBeAtLeastOneRoom=403
+        ThereShouldBeAtLeastOneRoom=403,
         #endregion
 
+
+        ReviewNotFound=700,
+        DuplicateReview=701,
+        AlreadyApproved=703
 
 
     }

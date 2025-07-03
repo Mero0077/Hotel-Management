@@ -15,36 +15,38 @@ namespace Hotel_Management.Services
             _roomRepository = roomRepository;
         }
 
-        public decimal GetDynamicPricing(DateTime startDate, DateTime endDate, decimal basePrice)
+        public  decimal GetDynamicPricing(DateTime startDate, DateTime endDate, decimal basePrice)
         {
             decimal price = basePrice;
 
-            var allRoomsCount = _roomRepository.GetAll().Count();
-            var occupiedRoomsCount = _roomRepository.Get(e => e.Status == RoomStatus.Occupied).Count();
+            var rooms = _roomRepository.GetAll();
 
-            if (occupiedRoomsCount / (decimal)allRoomsCount > 0.8m)
+            var allRoomsCount = rooms.Count();
+            var occupiedRoomsCount = rooms.Count(r => r.Status == RoomStatus.Occupied);
+
+
+            if (occupiedRoomsCount / (decimal)allRoomsCount > (decimal)0.8)
             {
-                price *= 1.20m; // CORRECT: just multiply by factor
+                price *= (decimal)1.20;
             }
 
             if ((startDate - DateTime.Now).TotalDays <= 2)
             {
-                price *= 1.15m;
+                price *= (decimal)1.15;
             }
 
             if (startDate.Month >= 6 && startDate.Month <= 8)
             {
-                price *= 1.10m;
+                price *= (decimal)1.10;
             }
 
             if (startDate.DayOfWeek == DayOfWeek.Friday || startDate.DayOfWeek == DayOfWeek.Saturday)
             {
-                price *= 1.05m;
+                price *= (decimal)1.05;
             }
 
             return price;
         }
-
     }
 
 }
