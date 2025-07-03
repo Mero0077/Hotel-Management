@@ -70,7 +70,7 @@ namespace Hotel_Management
             builder.Services.AddScoped<TransactionsMiddleWare>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<RoleFeatureService>();
-          
+            builder.Services.AddScoped<CustomerReviewService>();
 
             builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<DynamicPricingService>();

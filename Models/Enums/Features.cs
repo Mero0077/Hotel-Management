@@ -41,7 +41,11 @@
         AddOffer = 42,
         EditOffer = 43,
         DeleteOffer = 44,
-        ApplyOffer = 45
+        ApplyOffer = 45,
+
+        //Review
+        AddReview=50,
+        ApproveReview=51
     }
 
 }

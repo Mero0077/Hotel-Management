@@ -67,7 +67,6 @@ namespace Hotel_Management.Controllers
         [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.AddReservation })]
         public async Task<ResponseVM<ReservationVM>> Reserve([FromBody] ReservationVM reservation)
         {
-            // Let the service validate dates now!
             var reservationRequest = _mapper.Map<ReservationRequest>(reservation);
             var result = await _reservationService.ReserveRoom(reservationRequest);
 
