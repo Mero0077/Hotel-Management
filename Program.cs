@@ -15,6 +15,7 @@ using Hotel_Management.DTOs.Account;
 using Hotel_Management.Services.IServices;
 using Hotel_Management.MiddleWares;
 using Hotel_Management.DTOs.Roomoffer;
+using Hotel_Management.DTOs.Reports;
 
 
 
@@ -82,14 +83,16 @@ namespace Hotel_Management
             builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<OfferService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IBookingReportPdfService,BookReportPDFService>();
             builder.Services.AddMemoryCache();
             
 
             builder.Services.AddAutoMapper(
-                typeof(ReservationProfile).Assembly
-                ,typeof(OfferProfile).Assembly,
+                typeof(ReservationProfile).Assembly,      
+                typeof(OfferProfile).Assembly,
                  typeof(AccountProfile).Assembly,
-                 typeof(RoomOfferProfile).Assembly
+                 typeof(RoomOfferProfile).Assembly,
+                 typeof(ReportProfile).Assembly
                 );
 
             var app = builder.Build();

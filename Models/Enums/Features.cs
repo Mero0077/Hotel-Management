@@ -45,7 +45,16 @@
 
         //Review
         AddReview=50,
-        ApproveReview=51
+        ApproveReview=51,
+
+
+
+        //Report
+        BookingReport=60,
+        GenerateBookingReportPDF=61,
+
+
+
     }
 
 }

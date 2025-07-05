@@ -65,7 +65,12 @@
         ThereShouldBeAtLeastOneRoom = 803,
         #endregion
 
-
+        #region Report
+        ReportsNoData = 901,
+        DataRangeTooLarge=902,
+        FromMustBeEarlierThanTo=903,
+        InvalidDateFormat=904,
+        #endregion
 
     }
 }
