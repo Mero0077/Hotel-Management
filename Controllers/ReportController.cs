@@ -18,9 +18,9 @@ namespace Hotel_Management.Controllers
     {
         private readonly ReportService _reportService;
         private readonly IMapper _mapper;
-        private readonly IBookingReportPdfService _bookingReportPdfService;
+        private readonly IReportPdfService _bookingReportPdfService;
 
-        public ReportController(ReportService reportService,IMapper mapper,IBookingReportPdfService bookingReportPdfService) 
+        public ReportController(ReportService reportService,IMapper mapper,IReportPdfService bookingReportPdfService) 
         {
             this._reportService = reportService;
             this._mapper = mapper;
@@ -59,6 +59,22 @@ namespace Hotel_Management.Controllers
             var pdfBytes = _bookingReportPdfService.GenerateBookingReportPdf(viewModel, from, to);
 
             return File(pdfBytes, "application/pdf", "booking-report.pdf");
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GenerateRevenueReportPDF })]
+        public async Task<IActionResult> GenerateRevenueReportPDF([FromQuery] DateTime from, [FromQuery] DateTime to)
+        {
+            var result = await _reportService.GenerateRevenueReportPDFAsync(from, to);
+            var viewModel = _mapper.Map<IEnumerable<RevenueReportVM>>(result);
+
+            var pdf = _bookingReportPdfService.GenerateRevenueReportPdf(viewModel, from, to);
+
+
+            return File(pdf, "application/pdf", "revenue-report.pdf");
+
         }
 
 

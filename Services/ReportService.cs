@@ -44,14 +44,20 @@ namespace Hotel_Management.Services
                 throw new ValidationException("From date must be earlier than To date", ErrorCode.FromMustBeEarlierThanTo);
         }
 
-        public async Task GenerateBookingReportPDFAsync(DateTime from, DateTime to)
+        public async Task<IEnumerable<RevenueResponseDTO>> GenerateRevenueReportPDFAsync(DateTime from,DateTime to)
         {
             ValidateDate(from,to);
-            var query = _reservationRepository.Get(e => e.CheckInDate >= from && e.CheckOutDate <= to).ProjectTo<GetBookingReportResponseDTO>(_mapper.ConfigurationProvider);
+            var query = _reservationRepository.Get(e => e.CheckInDate >= from && e.CheckOutDate <= to);
             if (!await query.AnyAsync())
-                throw new NotFoundException("No Booking Data Found", ErrorCode.ReportsNoData);
+                throw new NotFoundException("No Data Found", ErrorCode.ReportsNoData);
+            var queryGrouped = await query.GroupBy(e => e.CheckInDate.Date).Select(e => new RevenueResponseDTO()
+            {
+                BookingCount = e.Count(),
+                Date = e.Key,
+                TotalRevenue = e.Sum(r => r.TotalCost)
+            }).OrderBy(e => e.Date).ToListAsync();
+            return queryGrouped;
         }
-
 
     }
 }
