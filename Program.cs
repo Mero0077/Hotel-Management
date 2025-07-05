@@ -83,7 +83,7 @@ namespace Hotel_Management
             builder.Services.AddScoped<ReservationService>();
             builder.Services.AddScoped<OfferService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
-            builder.Services.AddScoped<IBookingReportPdfService,BookReportPDFService>();
+            builder.Services.AddScoped<IReportPdfService,ReportPDFService>();
             builder.Services.AddMemoryCache();
             
 

@@ -12,6 +12,8 @@ namespace Hotel_Management.DTOs.Reports
                 .ForMember(des => des.CustomerEmail, opt => opt.MapFrom(src => src.Customer.Email));
             CreateMap<GetBookingReportVM, GetBokkingReportRequestDTO>();
             CreateMap<GetBookingReportResponseDTO,BookingReportVM>();
+
+          CreateMap<RevenueResponseDTO,RevenueReportVM>();
         }
     }
 }
