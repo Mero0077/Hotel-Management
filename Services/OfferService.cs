@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Hotel_Management.DTOs.Offers;
+using Hotel_Management.Exceptions;
 using Hotel_Management.Models;
 using Hotel_Management.Models.Enums;
 using Hotel_Management.Models.ViewModels.Errors;
+using Hotel_Management.Models.ViewModels.Offers;
 using Hotel_Management.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +25,13 @@ namespace Hotel_Management.Services
             _RoomOfferRepository = RoomOfferRepository;
         }
 
+        public async Task<IEnumerable<GetOffersVM>> GetAvaliableOffersAsync()
+        {
+            var response = _RoomOfferRepository.GetAll().Where(e=>e.Offer.StartDate <= DateTime.Today && e.Offer.EndDate >= DateTime.Today).ProjectTo<GetOffersVM>(_mapper.ConfigurationProvider);
+            if(!await response.AnyAsync())
+                throw new NotFoundException("No Offers Avaliable Yet",ErrorCode.OfferNotFound);
+            return await response.ToListAsync();
+        }
         public async Task<Offer?> IsOfferExistsAsync(int offerId)
         {
             var offer = await _OfferRepository.GetOneWithTrackingAsync(e=>e.Id==offerId);

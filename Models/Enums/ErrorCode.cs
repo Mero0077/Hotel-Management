@@ -49,18 +49,28 @@
         EmailOrPasswordIsWrong=606,
         #endregion
 
-        #region Offer
-        StartDateAlreadyExceed = 400,
-        StartDateMustBeBeforeEndDate=401,
-        OfferNotFound=402,
-        ThereShouldBeAtLeastOneRoom=403,
+      
+
+
+        #region Review
+        ReviewNotFound = 700,
+        DuplicateReview = 701,
+        AlreadyApproved = 703,
         #endregion
 
+        #region Offer
+        StartDateAlreadyExceed = 800,
+        StartDateMustBeBeforeEndDate = 801,
+        OfferNotFound = 802,
+        ThereShouldBeAtLeastOneRoom = 803,
+        #endregion
 
-        ReviewNotFound=700,
-        DuplicateReview=701,
-        AlreadyApproved=703
-
+        #region Report
+        ReportsNoData = 901,
+        DataRangeTooLarge=902,
+        FromMustBeEarlierThanTo=903,
+        InvalidDateFormat=904,
+        #endregion
 
     }
 }

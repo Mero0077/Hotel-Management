@@ -26,6 +26,15 @@ namespace Hotel_Management.Controllers
         }
 
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ResponseVM<IEnumerable<GetOffersVM>>> GetAvaliableOffers()
+        {
+            var response = await _OfferService.GetAvaliableOffersAsync();
+            return new SuccessResponseVM<IEnumerable<GetOffersVM>>(response);
+        }
+
+
         [Authorize]
         [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.AddOffer })]
         [HttpPost]
