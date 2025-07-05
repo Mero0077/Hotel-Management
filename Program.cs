@@ -14,6 +14,7 @@ using Hotel_Management.DTOs.Offers;
 using Hotel_Management.DTOs.Account;
 using Hotel_Management.Services.IServices;
 using Hotel_Management.MiddleWares;
+using Hotel_Management.DTOs.Roomoffer;
 
 
 
@@ -87,7 +88,8 @@ namespace Hotel_Management
             builder.Services.AddAutoMapper(
                 typeof(ReservationProfile).Assembly
                 ,typeof(OfferProfile).Assembly,
-                typeof(AccountProfile).Assembly
+                 typeof(AccountProfile).Assembly,
+                 typeof(RoomOfferProfile).Assembly
                 );
 
             var app = builder.Build();

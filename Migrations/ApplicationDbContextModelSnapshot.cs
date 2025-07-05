@@ -34,7 +34,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("RoomsId");
 
-                    b.ToTable("FacilityRoom");
+                    b.ToTable("FacilityRoom", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Customer", b =>
@@ -65,7 +65,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.CustomerFeedback", b =>
@@ -122,7 +122,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CustomerFeedback");
+                    b.ToTable("CustomerFeedback", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Facility", b =>
@@ -157,7 +157,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Facilities");
+                    b.ToTable("Facilities", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Offer", b =>
@@ -197,7 +197,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Reservation", b =>
@@ -256,7 +256,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.RoleFeature", b =>
@@ -293,7 +293,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleFeatures");
+                    b.ToTable("RoleFeatures", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.Room", b =>
@@ -346,7 +346,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("RoomTypeId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.RoomImage", b =>
@@ -389,7 +389,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomImages");
+                    b.ToTable("RoomImages", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.RoomOffer", b =>
@@ -430,7 +430,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomOffers");
+                    b.ToTable("RoomOffers", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.RoomType", b =>
@@ -469,7 +469,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoomTypes");
+                    b.ToTable("RoomTypes", (string)null);
                 });
 
             modelBuilder.Entity("Hotel_Management.Models.User", b =>
@@ -526,7 +526,7 @@ namespace Hotel_Management.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("FacilityRoom", b =>

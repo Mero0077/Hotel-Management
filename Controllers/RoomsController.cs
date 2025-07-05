@@ -27,8 +27,9 @@ namespace Hotel_Management.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
-        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetAllRooms })]
+        //[Authorize]
+        //[TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GetAllRooms })]
+        [AllowAnonymous]
         [HttpGet("")]
         public async Task<ResponseVM<IEnumerable<RoomResponse>>> GetAllRooms([FromQuery] RoomFilterVM roomFilterVM, CancellationToken cancellationToken)
         {

@@ -50,10 +50,8 @@ namespace Hotel_Management.Services
         public async Task<ResponseDTO<Reservation>> GetReservation(int id)
         {
             var reservation = await _ReservationRepository.GetOneWithTrackingAsync(e => e.Id == id);
-
             if (reservation == null)
                 return new ErrorFailDTO<Reservation>(ErrorCode.ReservationNotFound, "Reservation not found");
-
             return new ErrorSuccessDTO<Reservation>(reservation, "Reservation retrieved.");
         }
 
