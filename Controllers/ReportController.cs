@@ -77,6 +77,17 @@ namespace Hotel_Management.Controllers
 
         }
 
+        [HttpGet]
+        [Authorize]
+        [TypeFilter<CustomAuthorizeFilter>(Arguments = new object[] { Features.GenerateCustomerReportPDF })]
+        public async Task<IActionResult> GenerateCustomerReportPDF([FromQuery] DateTime from, [FromQuery,] DateTime to)
+        {
+            var result = await _reportService.GenerateCustomerReportPDFAsync(from, to);
+            var viewModel = _mapper.Map<IEnumerable<CustomerReportVM>>(result);
+            var pdf = _bookingReportPdfService.GenerateCustomerReportPdf(viewModel, from, to);
+            return File(pdf, "application/pdf", "customer-report.pdf");
+
+        }
 
     }
 }

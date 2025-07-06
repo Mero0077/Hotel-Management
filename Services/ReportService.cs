@@ -59,5 +59,24 @@ namespace Hotel_Management.Services
             return queryGrouped;
         }
 
+        public async Task<IEnumerable<CustomerReportResponseDTO>> GenerateCustomerReportPDFAsync(DateTime from,DateTime to)
+        {
+            ValidateDate(from,to);
+            var resverations = _reservationRepository.Get(e=>e.CheckInDate >=from && e.CheckOutDate <= to).ProjectTo<CustomerFlatResponseDTO>(_mapper.ConfigurationProvider);
+            if(!await resverations.AnyAsync())
+                throw new NotFoundException("No Data Found", ErrorCode.ReportsNoData);
+            var grouppedDate = await resverations.GroupBy(e => e.CustomerId).Select(e => new CustomerReportResponseDTO()
+            {
+                CustomerId = e.Key,
+                Email = e.First().Email,
+                TotalBookings = e.Count(),
+                TotalSpent = e.Sum(e => e.TotalSpent)
+            }).OrderBy(e => e.TotalSpent).ToListAsync();
+
+            return grouppedDate;
+
+        }
+
+
     }
 }

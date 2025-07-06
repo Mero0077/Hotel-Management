@@ -74,6 +74,83 @@ namespace Hotel_Management.Services
             return document.GeneratePdf();
         }
 
+        public byte[] GenerateCustomerReportPdf(IEnumerable<CustomerReportVM> data, DateTime from, DateTime to)
+        {
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(30);
+
+                    // Header
+                    page.Header()
+                        .Text("Customer Report")
+                        .SemiBold().FontSize(20).FontColor(Colors.Blue.Medium);
+
+                    // Content
+                    page.Content().Column(col =>
+                    {
+                        col.Spacing(10);
+
+                        col.Item().Text($"📅 From: {from:yyyy-MM-dd}   To: {to:yyyy-MM-dd}").FontSize(12);
+
+                        col.Item().Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(1); // #
+                                columns.RelativeColumn(4); // Email
+                                columns.RelativeColumn(2); // Bookings
+                                columns.RelativeColumn(3); // Total Spent
+                            });
+
+                            // Table Header
+                            table.Header(header =>
+                            {
+                                header.Cell().Element(CellStyle).Text("#");
+                                header.Cell().Element(CellStyle).Text("Email");
+                                header.Cell().Element(CellStyle).Text("Total Bookings");
+                                header.Cell().Element(CellStyle).Text("Total Spent (EGP)");
+
+                                static IContainer CellStyle(IContainer container) =>
+                                    container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).Background(Colors.Grey.Lighten3).BorderBottom(1).BorderColor(Colors.Grey.Lighten2);
+                            });
+
+                            // Table Rows
+                            int index = 1;
+                            foreach (var item in data)
+                            {
+                                table.Cell().Element(RowStyle).Text(index++.ToString());
+                                table.Cell().Element(RowStyle).Text(item.Email);
+                                table.Cell().Element(RowStyle).Text(item.TotalBookings.ToString());
+                                table.Cell().Element(RowStyle).Text($"{item.TotalSpent:N2}");
+
+                                static IContainer RowStyle(IContainer container) =>
+                                    container.PaddingVertical(2).BorderBottom(1).BorderColor(Colors.Grey.Lighten3);
+                            }
+                        });
+
+                        // Summary
+                        var totalCustomers = data.Count();
+                        var totalSpent = data.Sum(x => x.TotalSpent);
+
+                        col.Item().PaddingTop(15).Text($"Total Customers: {totalCustomers}");
+                        col.Item().Text($"Total Revenue: {totalSpent:N2} EGP");
+                    });
+
+                    // Footer
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(txt =>
+                        {
+                            txt.Span("Generated at: ").SemiBold();
+                            txt.Span($"{DateTime.Now:yyyy-MM-dd HH:mm}");
+                        });
+                });
+            })
+               .GeneratePdf();
+        }
+
         public byte[] GenerateRevenueReportPdf(IEnumerable<RevenueReportVM> revenueReportVMs, DateTime from, DateTime to)
         {
             var totalBookings = revenueReportVMs.Sum(x => x.BookingCount);
