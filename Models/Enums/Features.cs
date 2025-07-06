@@ -53,7 +53,7 @@
         BookingReport=60,
         GenerateBookingReportPDF=61,
         GenerateRevenueReportPDF=62,
-
+        GenerateCustomerReportPDF=63,
 
 
     }
