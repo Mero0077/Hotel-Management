@@ -19,11 +19,11 @@ namespace Hotel_Management.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(12));
 
-                    page.Header().Text("📋 Booking Report").Bold().FontSize(18).FontColor(Colors.Blue.Medium);
+                    page.Header().Text("Booking Report").Bold().FontSize(18).FontColor(Colors.Blue.Medium);
 
                     page.Content().Column(col =>
                     {
-                        col.Item().Text($"🗓️ From: {from:yyyy-MM-dd} - To: {to:yyyy-MM-dd}").FontSize(13).Bold();
+                        col.Item().Text($"From: {from:yyyy-MM-dd} - To: {to:yyyy-MM-dd}").FontSize(13).Bold();
                         col.Item().PaddingVertical(10);
 
                         col.Item().Table(table =>
@@ -92,7 +92,7 @@ namespace Hotel_Management.Services
                     {
                         col.Spacing(10);
 
-                        col.Item().Text($"📅 From: {from:yyyy-MM-dd}   To: {to:yyyy-MM-dd}").FontSize(12);
+                        col.Item().Text($"From: {from:yyyy-MM-dd}   To: {to:yyyy-MM-dd}").FontSize(12);
 
                         col.Item().Table(table =>
                         {
@@ -116,7 +116,6 @@ namespace Hotel_Management.Services
                                     container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).Background(Colors.Grey.Lighten3).BorderBottom(1).BorderColor(Colors.Grey.Lighten2);
                             });
 
-                            // Table Rows
                             int index = 1;
                             foreach (var item in data)
                             {
@@ -130,7 +129,6 @@ namespace Hotel_Management.Services
                             }
                         });
 
-                        // Summary
                         var totalCustomers = data.Count();
                         var totalSpent = data.Sum(x => x.TotalSpent);
 
@@ -138,7 +136,6 @@ namespace Hotel_Management.Services
                         col.Item().Text($"Total Revenue: {totalSpent:N2} EGP");
                     });
 
-                    // Footer
                     page.Footer()
                         .AlignCenter()
                         .Text(txt =>
@@ -164,11 +161,11 @@ namespace Hotel_Management.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(12));
 
-                    page.Header().Text("💵 Revenue Report").Bold().FontSize(18).FontColor(Colors.Green.Medium);
+                    page.Header().Text("Revenue Report").Bold().FontSize(18).FontColor(Colors.Green.Medium);
 
                     page.Content().Column(col =>
                     {
-                        col.Item().Text($"🗓️ From: {from:yyyy-MM-dd} - To: {to:yyyy-MM-dd}").FontSize(13).Bold();
+                        col.Item().Text($"From: {from:yyyy-MM-dd} - To: {to:yyyy-MM-dd}").FontSize(13).Bold();
                         col.Item().PaddingVertical(10);
 
                         col.Item().Table(table =>
@@ -201,8 +198,8 @@ namespace Hotel_Management.Services
                         });
 
                         col.Item().PaddingTop(15);
-                        col.Item().Text($"🔢 Total Bookings: {totalBookings}").Bold();
-                        col.Item().Text($"💰 Total Revenue: {totalRevenue:C}").Bold();
+                        col.Item().Text($"Total Bookings: {totalBookings}").Bold();
+                        col.Item().Text($"Total Revenue: {totalRevenue:C}").Bold();
                     });
 
                     page.Footer().AlignCenter().Text(txt =>
