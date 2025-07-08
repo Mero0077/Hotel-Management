@@ -6,7 +6,7 @@
 - Modify their booking dates.
 - Submit reviews about the hotel and its services after checkout.
 - View dynamic room pricing based on the current season (summer, winter, etc.).
-- Explore different user roles (Admin, Staff, Customer) with dynamic access control.
+- Explore different user roles (HotelStaff, Customer) with dynamic access control.
 
 ---
 
