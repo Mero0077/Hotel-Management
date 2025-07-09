@@ -5,7 +5,7 @@ namespace Hotel_Management.DTOs.Reports
 {
     public class ReportProfile : Profile
     {
-        ReportProfile() 
+       public ReportProfile() 
         {
             CreateMap<Models.Reservation, GetBookingReportResponseDTO>()
                 .ForMember(des => des.RoomNumber, opt => opt.MapFrom(src => src.Room.RoomNumber))

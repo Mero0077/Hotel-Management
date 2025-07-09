@@ -9,6 +9,7 @@ using Hotel_Management.Models.ViewModels.Account;
 using Hotel_Management.Models.ViewModels.Errors;
 using Hotel_Management.Services;
 using Hotel_Management.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace Hotel_Management.Controllers.Identity
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private UserService _userService;
+        private readonly UserService _userService;
         private readonly IMapper _mapper;
 
         public IdentityController(UserService userService,IMapper mapper)
@@ -28,8 +29,10 @@ namespace Hotel_Management.Controllers.Identity
         }
 
         [HttpPost]
-        public async Task<ResponseVM<string>> Login(LoginVM loginVM)
+        [AllowAnonymous]
+        public async Task<ResponseVM<string>> Login([FromBody]LoginVM loginVM)
         {
+            Console.WriteLine("Loggin Hit");
             var mapped = _mapper.Map<LoginDTO>(loginVM);
 
             var user = await _userService.LoginAsync(mapped);
@@ -40,6 +43,7 @@ namespace Hotel_Management.Controllers.Identity
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ResponseVM<RegisterVM>> Register([FromBody] RegisterVM registerVM)
         {
             var mapped = _mapper.Map<RegisterRequestDto>(registerVM);
@@ -54,6 +58,8 @@ namespace Hotel_Management.Controllers.Identity
 
 
         [HttpPost]
+        [AllowAnonymous]
+
         public async Task<ResponseVM<bool>> SendOTP(SendEmailVM sendEmailVM)
         {
             var res = await _userService.SendOtpToMailAsync(sendEmailVM.Email);
@@ -62,6 +68,7 @@ namespace Hotel_Management.Controllers.Identity
             return new SuccessResponseVM<bool>(res);
         }
         [HttpPut]
+        [AllowAnonymous]
         public async Task<ResponseVM<ResetPasswordResponseVM>> ResetPassword(ResetPasswordVM resetPasswordVM)
         {
             var mapped = _mapper.Map<ResetPasswordRequestDto>(resetPasswordVM);
