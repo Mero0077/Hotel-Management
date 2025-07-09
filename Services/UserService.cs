@@ -18,7 +18,7 @@ namespace Hotel_Management.Services
 {
     public class UserService
     {
-        GeneralRepository<User> _generalRepository;
+        private readonly GeneralRepository<User> _generalRepository;
         private readonly IEmailService _emailService;
         private readonly IMemoryCache _memoryCache;
         private readonly IMapper _mapper;

@@ -96,7 +96,6 @@ namespace Hotel_Management
                 );
 
             var app = builder.Build();
-            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
            
 
             // Configure the HTTP request pipeline.
@@ -105,6 +104,7 @@ namespace Hotel_Management
                 app.MapScalarApiReference();
                 app.MapOpenApi();
             }
+            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
             app.UseHttpsRedirection();
 

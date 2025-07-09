@@ -22,6 +22,7 @@ namespace Hotel_Management.MiddleWares
             catch (Exception ex)
             {
                 await _context.Database.RollbackTransactionAsync();
+                throw;
             }
 
         }
